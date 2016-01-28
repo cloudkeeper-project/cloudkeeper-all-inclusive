@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>workflow-runtimecontext</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Workflow: RuntimeContext factory</name>
+    <description>
+        Provides elementary CloudKeeper services such as a RuntimeContextFactory.
+    </description>
+
+    <parent>
+        <groupId>com.svbio.workflow</groupId>
+        <artifactId>workflow</artifactId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Annotation processing is done with the maven-process-plugin. Unfortunately, adding a
+                         dependencies sections to the maven-compiler-plugin has no effect, so the annotation processors
+                         would have to be declared as ordinary optional dependencies (in the main dependency section).
+                         That is clearly undesirable.
+                         External documentation of the issue: http://stackoverflow.com/q/26228563 -->
+                    <proc>none</proc>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <usedDependencies>
+                        <usedDependency>com.google.guava:guava</usedDependency>
+                        <usedDependency>org.slf4j:slf4j-simple</usedDependency>
+                    </usedDependencies>
+                </configuration>
+            </plugin>
+
+            <!-- The maven-processor-plugin is used to run annotation processors. See comments for
+                 maven-compiler-plugin. -->
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>maven-processor-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <!-- It is not necessary to explicitly specify annotation processors as there is a discovery
+                                 mechanism, but we do it anyway to avoid a warning by the maven-processor-plugin. -->
+                            <processors>
+                                <processor>dagger.internal.codegen.ComponentProcessor</processor>
+                            </processors>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.dagger</groupId>
+                        <artifactId>dagger-compiler</artifactId>
+                        <version>${dagger.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <artifactId>cloudkeeper-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <artifactId>cloudkeeper-basic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <artifactId>cloudkeeper-dsl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <artifactId>cloudkeeper-linker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <artifactId>cloudkeeper-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <artifactId>cloudkeeper-maven-bundle-loader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <artifactId>cloudkeeper-maven-bundles</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.dagger</groupId>
+            <artifactId>dagger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_2.11</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-connector-basic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-transport-file</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-transport-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-aether-provider</artifactId>
+        </dependency>
+        <dependency>
+            <!-- The following is necessary when using maven-aether-provider, because its POM is quite messy. It
+                 depends optionally on org.sonatype.sisu:sisu:guice:no_aop:3.2.3 (see
+                 https://github.com/apache/maven/blob/maven-3.2.5/maven-aether-provider/pom.xml#L83), which brings
+                 in guava (see https://github.com/sonatype/sisu-guice/blob/sisu-guice-3.2.3/pom.xml#L130).
+                 Unfortunately, the transitive guava dependency is not really optional:
+                 org.apache.maven.repository.internal.DefaultModelResolver imports com.google.common.base.Predicate.
+                 Also note that guava is version controlled in the Maven base POM:
+                 https://github.com/apache/maven/blob/maven-3.2.5/pom.xml#L53. -->
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <artifactId>cloudkeeper-testkit</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <artifactId>cloudkeeper-maven-testkit</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

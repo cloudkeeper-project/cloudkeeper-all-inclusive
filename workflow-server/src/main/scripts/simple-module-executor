@@ -1,0 +1,20 @@
+#!/bin/bash -e
+
+# Start forked simple-module executor
+# -----------------------------------
+#
+# Prerequisites:
+# - etc/workflowd.conf correctly configured
+
+# Absolute root path of workflow server
+export WORKFLOW_HOME=$(cd "$(dirname "${BASH_SOURCE}")/.."; pwd)
+cd "${WORKFLOW_HOME}"
+
+# "-Dconfig.file=..." is not specified here. Instead, the assumption is that
+# this script is called with an argument of form "-Dconfig.file=...".
+# Rationale: Whatever config.file option is passed to workflowd should also be
+# used by this executor.
+java \
+    -Dcom.svbio.workflow.loader=aether \
+    "$@" \
+    -jar lib/workflow-forked-executor-${project.version}.jar

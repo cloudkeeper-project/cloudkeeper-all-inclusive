@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>workflow-sample-embedded-ck</artifactId>
+
+    <packaging>jar</packaging>
+    <name>Workflow Sample: Embedded Workflow Service</name>
+    <description>
+        Simple Java tool that embeds the Workflow Service component and dynamically loads and runs the compute-pi
+        module.
+    </description>
+
+    <parent>
+        <groupId>com.svbio.workflow.samples</groupId>
+        <artifactId>workflow-samples</artifactId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <local.repository>aether-repository</local.repository>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- We run the assembly plugin only for the integration test. Specifically, the assembly plugin creates
+                     a local Maven repository that is needed for the test. Note that the local repository creates many
+                     more artifact than needed, because all dependencies of this project are copied into it (even though
+                     the dependencies of workflow-samples-ckbundle would be enough). -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <attach>false</attach>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <finalName>${local.repository}</finalName>
+                            <descriptors>
+                                <descriptor>src/main/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <usedDependencies>
+                        <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
+                        <usedDependency>org.slf4j:slf4j-simple</usedDependency>
+                        <usedDependency>com.svbio.workflow.samples:workflow-sample-ckbundle</usedDependency>
+                    </usedDependencies>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>com/svbio/workflow/samples/embeddedck/version.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>com/svbio/workflow/samples/embeddedck/version.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>application.conf</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>application.conf</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+    </build>
+
+    <dependencies>
+        <!-- The dependency on workflow-sample-ckbundle only exists for the assembly plugin, which builds a local Maven
+             repository. -->
+        <dependency>
+            <groupId>com.svbio.workflow.samples</groupId>
+            <artifactId>workflow-sample-ckbundle</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.workflow.samples</groupId>
+            <artifactId>workflow-sample-ckbundle</artifactId>
+            <type>ckbundle</type>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <artifactId>cloudkeeper-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <artifactId>cloudkeeper-basic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <artifactId>cloudkeeper-maven-bundles</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.svbio.workflow</groupId>
+            <artifactId>workflow-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.workflow</groupId>
+            <artifactId>workflow-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.svbio.workflow</groupId>
+            <artifactId>workflow-runtimecontext</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <artifactId>cloudkeeper-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

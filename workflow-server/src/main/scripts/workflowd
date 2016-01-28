@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+# Start Workflow Server
+# ---------------------
+#
+# Prerequisites:
+# - etc/workflowd.conf correctly configured
+
+# Absolute root path of CloudKeeper service
+export WORKFLOW_HOME=$(cd "$(dirname "${BASH_SOURCE}")/.."; pwd)
+cd "${WORKFLOW_HOME}"
+
+java \
+    -Dcom.svbio.workflow.loader=aether \
+    -Dconfig.file=etc/workflowserver.conf \
+    "$@" \
+    -jar lib/workflow-server-${project.version}.jar

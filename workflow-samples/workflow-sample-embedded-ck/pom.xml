@@ -123,10 +123,6 @@
             <artifactId>cloudkeeper-model</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
-            <artifactId>cloudkeeper-basic</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.svbio.cloudkeeper.maven</groupId>
             <artifactId>cloudkeeper-maven-bundles</artifactId>
         </dependency>

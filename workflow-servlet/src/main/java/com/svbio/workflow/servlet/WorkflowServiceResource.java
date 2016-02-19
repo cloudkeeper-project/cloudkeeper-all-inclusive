@@ -78,10 +78,12 @@ public final class WorkflowServiceResource {
     public void executeWorkflow(@Suspended final AsyncResponse asyncResponse,
             ExecuteWorkflowRequest executeWorkflowRequest) {
         WorkflowExecution workflowExecution = workflowService.startExecution(executeWorkflowRequest);
-        workflowExecution.whenHasExecutionId((@Nullable Throwable throwable, @Nullable Long executionId) -> {
+        workflowExecution.getExecutionId().whenComplete((executionId, throwable) -> {
             if (throwable != null) {
                 asyncResponse.resume(throwable);
             } else {
+                // The contract of workflowExecution#getExecutionId() ensures the following assertion.
+                assert executionId != null;
                 asyncResponse.resume(
                     Response.seeOther(
                         UriBuilder.fromResource(getClass())

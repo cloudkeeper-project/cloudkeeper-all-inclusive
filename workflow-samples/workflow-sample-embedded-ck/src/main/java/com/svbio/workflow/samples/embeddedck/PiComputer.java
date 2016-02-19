@@ -7,8 +7,6 @@ import com.svbio.cloudkeeper.model.beans.element.module.MutableModule;
 import com.svbio.cloudkeeper.model.beans.element.module.MutableProxyModule;
 import com.svbio.cloudkeeper.model.immutable.element.SimpleName;
 import com.svbio.cloudkeeper.model.immutable.element.Version;
-import com.svbio.cloudkeeper.simple.AwaitException;
-import com.svbio.cloudkeeper.simple.WorkflowExecutions;
 import com.svbio.workflow.base.ConfigModule;
 import com.svbio.workflow.base.LifecycleManager;
 import com.svbio.workflow.base.LifecycleManagerModule;
@@ -24,6 +22,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -55,7 +54,7 @@ public final class PiComputer {
     }
 
     private static String computePiWithEnvironment(CloudKeeperEnvironment cloudKeeperEnvironment, int precision)
-            throws AwaitException, TimeoutException, InterruptedException {
+            throws ExecutionException, TimeoutException, InterruptedException {
         MutableModule<?> module = new MutableProxyModule()
             .setDeclaration(PI_MODULE_CLASS_NAME);
         WorkflowExecution workflowExecution = cloudKeeperEnvironment
@@ -66,9 +65,8 @@ public final class PiComputer {
             )
             .start();
 
-        WorkflowExecutions.awaitFinish(workflowExecution, 1, TimeUnit.MINUTES);
-        return (String)
-            WorkflowExecutions.getOutputValue(workflowExecution, PI_MODULE_OUTPUT_NAME, 1, TimeUnit.SECONDS);
+        workflowExecution.toCompletableFuture().get(1, TimeUnit.MINUTES);
+        return (String) workflowExecution.getOutput(PI_MODULE_OUTPUT_NAME).get(1, TimeUnit.SECONDS);
     }
 
     /**
@@ -97,7 +95,7 @@ public final class PiComputer {
                 "Timeout during compute-π module execution. The Maven remote repositories may not be available.",
                 exception
             );
-        } catch (AwaitException | InterruptedException exception) {
+        } catch (ExecutionException | InterruptedException exception) {
             // Obviously, production code should try to recover or display a reasonable error message. In this example,
             // however, we indeed are in an unexpected, i.e., illegal, state.
             throw new IllegalStateException("Unexpected exception during compute-π module execution.", exception);

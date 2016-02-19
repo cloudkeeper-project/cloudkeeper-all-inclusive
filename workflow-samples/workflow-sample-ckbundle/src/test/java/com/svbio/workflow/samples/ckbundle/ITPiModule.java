@@ -50,8 +50,7 @@ public class ITPiModule {
     /**
      * Verifies the {@link PiModule}, running it with the given CloudKeeper environment.
      *
-     * <p>This method awaits the workflow execution using
-     * {@link WorkflowExecutions#awaitFinish(WorkflowExecution, long, TimeUnit)}.
+     * <p>This method awaits the workflow execution by awaiting {@link WorkflowExecution#toCompletableFuture()}.
      */
     private static void runWithEnvironment(CloudKeeperEnvironment cloudKeeperEnvironment) throws Exception {
         PiModule module = ModuleFactory.getDefault().create(PiModule.class)
@@ -61,7 +60,7 @@ public class ITPiModule {
             .newPreconfiguredWorkflowExecutionBuilder(cloudKeeperEnvironment)
             .start();
 
-        WorkflowExecutions.awaitFinish(workflowExecution, 1, TimeUnit.MINUTES);
+        workflowExecution.toCompletableFuture().get(1, TimeUnit.MINUTES);
         Assert.assertEquals(
             WorkflowExecutions.getOutputValue(workflowExecution, module.digits(), 1, TimeUnit.SECONDS),
             EXPECTED

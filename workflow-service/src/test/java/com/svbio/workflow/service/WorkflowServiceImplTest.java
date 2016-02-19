@@ -31,12 +31,12 @@ import scala.concurrent.ExecutionContext;
 
 import javax.annotation.Nullable;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
@@ -138,7 +138,7 @@ public class WorkflowServiceImplTest {
 
             // Verify that initially the output future is not completed, but also that it can be completed before the
             // execution finished
-            workflowExecution.whenHasOutput(OUT_PORT, (throwable, value) -> receivedOutput.set(value));
+            workflowExecution.getOutput(OUT_PORT).whenComplete((value, throwable) -> receivedOutput.set(value));
             Assert.assertNull(receivedOutput.get());
             mockWorkflowExecution.setOutput(OUT_PORT, OUT_PORT_RESULT);
             Assert.assertSame(receivedOutput.get(), OUT_PORT_RESULT);
@@ -209,9 +209,7 @@ public class WorkflowServiceImplTest {
             // Stop the execution and verify that it is no longer active. Also verify that the workflow execution was
             // completed exceptionally
             AtomicReference<Throwable> failure = new AtomicReference<>();
-            workflowExecution.whenExecutionFinished(
-                (@Nullable Throwable throwable, @Nullable Void value) -> failure.set(throwable)
-            );
+            workflowExecution.toCompletableFuture().whenComplete((voidResult, throwable) -> failure.set(throwable));
             Assert.assertNull(failure.get());
 
             environmentFactory.stopExecutionId(EXECUTION_ID);
@@ -335,15 +333,10 @@ public class WorkflowServiceImplTest {
     }
 
     private static final class MockWorkflowExecution implements WorkflowExecution {
-        @Nullable private RuntimeAnnotatedExecutionTrace executionTrace;
-        private long executionId = 0;
-        private boolean running = true;
-        @Nullable private Exception failure;
-        private final List<OnActionComplete<RuntimeAnnotatedExecutionTrace>> traceCallbacks = new ArrayList<>();
-        private final List<OnActionComplete<Long>> executionIdCallbacks = new ArrayList<>();
-        private final List<OnActionComplete<Void>> finishCallbacks = new ArrayList<>();
-        private final Map<String, Object> outputMap = new HashMap<>();
-        private final Map<String, List<OnActionComplete<Object>>> outputCallbacks = new HashMap<>();
+        private final CompletableFuture<RuntimeAnnotatedExecutionTrace> traceFuture = new CompletableFuture<>();
+        private final CompletableFuture<Long> executionIdFuture = new CompletableFuture<>();
+        private final CompletableFuture<Void> executionFuture = new CompletableFuture<>();
+        private final Map<String, CompletableFuture<Object>> outputFutureMap = new HashMap<>();
 
         @Override
         public long getStartTimeMillis() {
@@ -352,7 +345,7 @@ public class WorkflowServiceImplTest {
 
         @Override
         public boolean cancel() {
-            if (running) {
+            if (!executionFuture.isDone()) {
                 setFailure(new CancellationException());
                 return true;
             } else {
@@ -361,103 +354,96 @@ public class WorkflowServiceImplTest {
         }
 
         void setExecutionTrace(RuntimeAnnotatedExecutionTrace executionTrace) {
-            assert this.executionTrace == null;
-            this.executionTrace = executionTrace;
-            traceCallbacks.forEach(callback -> callback.complete(null, executionTrace));
-            traceCallbacks.clear();
+            boolean completedNow = traceFuture.complete(executionTrace);
+            assert completedNow;
+        }
+
+        /**
+         * Returns a copy of the given completion stage.
+         *
+         * <p>This method is used whenever an interface contract requires that a <em>new</em> {@link CompletableFuture}
+         * is returned.
+         *
+         * <p>Unfortunately {@code completionStage.toCompletableFuture().thenApply(Function.identity())} does
+         * <em>not</em> create a copy because such a future would be completed with a
+         * {@link java.util.concurrent.CompletionException} (containing the completion stage's exception as cause).
+         */
+        private static <T> CompletableFuture<T> newCompletableFuture(CompletionStage<T> completionStage) {
+            CompletableFuture<T> future = new CompletableFuture<>();
+            completionStage.whenComplete((result, failure) -> {
+                if (failure != null) {
+                    future.completeExceptionally(failure);
+                } else {
+                    future.complete(result);
+                }
+            });
+            return future;
         }
 
         @Override
-        public void whenHasRootExecutionTrace(
-                OnActionComplete<RuntimeAnnotatedExecutionTrace> onHasRootExecutionTrace) {
-            if (executionTrace != null) {
-                onHasRootExecutionTrace.complete(null, executionTrace);
-            } else {
-                traceCallbacks.add(onHasRootExecutionTrace);
-            }
+        public CompletableFuture<RuntimeAnnotatedExecutionTrace> getTrace() {
+            return newCompletableFuture(traceFuture);
         }
 
         private void setExecutionId(long executionId) {
-            assert this.executionId <= 0 && executionId > 0;
-            this.executionId = executionId;
-            executionIdCallbacks.forEach(callback -> callback.complete(null, executionId));
-            executionIdCallbacks.clear();
+            assert executionId > 0;
+            boolean completedNow = executionIdFuture.complete(executionId);
+            assert completedNow;
         }
 
         @Override
-        public void whenHasExecutionId(OnActionComplete<Long> onHasExecutionId) {
-            if (executionId > 0) {
-                onHasExecutionId.complete(null, executionId);
-            } else {
-                executionIdCallbacks.add(onHasExecutionId);
-            }
+        public CompletableFuture<Long> getExecutionId() {
+            return newCompletableFuture(executionIdFuture);
         }
 
         private void setSuccess() {
-            assert running;
-            running = false;
-            finishCallbacks.forEach(callback -> callback.complete(null, null));
-            finishCallbacks.clear();
+            boolean completedNow = executionFuture.complete(null);
+            assert completedNow;
         }
 
         private void setFailure(Exception exception) {
-            assert running;
-            running = false;
-            failure = exception;
+            // Complete all futures that have not yet been completed (note that some may have been -- hence, no assert
+            // after completeExceptionally)
             Stream.concat(
-                    Stream.of(traceCallbacks, executionIdCallbacks, finishCallbacks),
-                    outputCallbacks.values().stream()
+                    Stream.of(traceFuture, executionIdFuture, executionFuture),
+                    outputFutureMap.values().stream()
                 )
-                .flatMap(List::stream)
-                .forEach(callback -> callback.complete(exception, null));
-            Stream.of(traceCallbacks, executionIdCallbacks, finishCallbacks).forEach(List::clear);
-            outputCallbacks.clear();
+                .forEach(future -> future.completeExceptionally(exception));
         }
 
         @Override
         public boolean isRunning() {
-            return running;
+            return !executionFuture.isDone();
         }
 
-        private List<OnActionComplete<Object>> getOutportCallbacks(String outPortName) {
-            @Nullable List<OnActionComplete<Object>> callbacks = outputCallbacks.get(outPortName);
-            if (callbacks == null) {
-                callbacks = new ArrayList<>();
-                outputCallbacks.put(outPortName, callbacks);
+        private CompletableFuture<Object> getOutputFuture(String outPortName) {
+            @Nullable CompletableFuture<Object> outputFuture = outputFutureMap.get(outPortName);
+            if (outputFuture == null) {
+                outputFuture = new CompletableFuture<>();
+                outputFutureMap.put(outPortName, outputFuture);
             }
-            return callbacks;
+            return outputFuture;
         }
 
         private void setOutput(String outPortName, Object value) {
-            assert !outputMap.containsKey(outPortName);
-            outputMap.put(outPortName, value);
-            List<OnActionComplete<Object>> outportCallbacks = getOutportCallbacks(outPortName);
-            outportCallbacks.forEach(callback -> callback.complete(null, value));
-            outportCallbacks.clear();
+            CompletableFuture<Object> outputFuture = getOutputFuture(outPortName);
+            boolean completedNow = outputFuture.complete(value);
+            assert completedNow;
         }
 
         @Override
-        public void whenHasOutput(String outPortName, OnActionComplete<Object> onHasOutput) {
-            @Nullable Object outputValue = outputMap.get(outPortName);
-            if (outputValue != null) {
-                onHasOutput.complete(null, outputValue);
-            } else {
-                getOutportCallbacks(outPortName).add(onHasOutput);
-            }
+        public CompletableFuture<Object> getOutput(String outPortName) {
+            return newCompletableFuture(getOutputFuture(outPortName));
         }
 
         @Override
-        public void whenHasFinishTimeMillis(OnActionComplete<Long> onHasFinishTimeMillis) {
+        public CompletableFuture<Long> getFinishTimeMillis() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void whenExecutionFinished(OnActionComplete<Void> onExecutionFinished) {
-            if (!running) {
-                onExecutionFinished.complete(null, null);
-            } else {
-                finishCallbacks.add(onExecutionFinished);
-            }
+        public CompletableFuture<Void> toCompletableFuture() {
+            return newCompletableFuture(executionFuture);
         }
     }
 

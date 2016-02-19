@@ -319,16 +319,18 @@ public class ITWorkflowServletModule {
         }
 
         @Override
-        public void whenHasRootExecutionTrace(OnActionComplete<RuntimeAnnotatedExecutionTrace> onHasRootExecutionTrace) {
+        public CompletableFuture<RuntimeAnnotatedExecutionTrace> getTrace() {
             throw newUnsupportedOperationException();
         }
 
         @Override
-        public void whenHasExecutionId(OnActionComplete<Long> onHasExecutionId) {
+        public CompletableFuture<Long> getExecutionId() {
             if (executionId > 0) {
-                onHasExecutionId.complete(null, executionId);
+                return CompletableFuture.completedFuture(executionId);
             } else {
-                onHasExecutionId.complete(new ExpectedException(), null);
+                CompletableFuture<Long> future = new CompletableFuture<>();
+                future.completeExceptionally(new ExpectedException());
+                return future;
             }
         }
 
@@ -338,17 +340,17 @@ public class ITWorkflowServletModule {
         }
 
         @Override
-        public void whenHasOutput(String outPortName, OnActionComplete<Object> onHasOutput) {
+        public CompletableFuture<Object> getOutput(String outPortName) {
             throw newUnsupportedOperationException();
         }
 
         @Override
-        public void whenHasFinishTimeMillis(OnActionComplete<Long> onHasFinishTimeMillis) {
+        public CompletableFuture<Long> getFinishTimeMillis() {
             throw newUnsupportedOperationException();
         }
 
         @Override
-        public void whenExecutionFinished(OnActionComplete<Void> onExecutionFinished) {
+        public CompletableFuture<Void> toCompletableFuture() {
             throw newUnsupportedOperationException();
         }
     }

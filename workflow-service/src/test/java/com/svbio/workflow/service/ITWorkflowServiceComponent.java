@@ -1,12 +1,12 @@
 package com.svbio.workflow.service;
 
-import com.svbio.workflow.bundles.core.Requirements;
 import com.svbio.cloudkeeper.examples.modules.BinarySum;
 import com.svbio.cloudkeeper.examples.modules.Decrease;
 import com.svbio.cloudkeeper.examples.modules.DelayingModule;
 import com.svbio.cloudkeeper.examples.modules.Fibonacci;
 import com.svbio.cloudkeeper.examples.modules.GreaterOrEqual;
 import com.svbio.cloudkeeper.examples.modules.ThrowingModule;
+import com.svbio.cloudkeeper.interpreter.InterpreterException;
 import com.svbio.cloudkeeper.maven.Bundles;
 import com.svbio.cloudkeeper.maven.DummyAetherRepository;
 import com.svbio.cloudkeeper.model.api.CancellationException;
@@ -35,6 +35,7 @@ import com.svbio.workflow.api.WorkflowService;
 import com.svbio.workflow.base.ConfigModule;
 import com.svbio.workflow.base.LifecycleManager;
 import com.svbio.workflow.base.LifecycleManagerModule;
+import com.svbio.workflow.bundles.core.Requirements;
 import com.svbio.workflow.entities.Execution;
 import com.svbio.workflow.entities.ExecutionFrame;
 import com.svbio.workflow.entities.ExecutionFrameError;
@@ -72,6 +73,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -220,12 +222,9 @@ public class ITWorkflowServiceComponent {
             .setBundleIdentifiers(Collections.singletonList(bundleIdentifier))
             .setOverrides(newOverridesList())
             .start();
-        Assert.assertEquals(
-            WorkflowExecutions.getOutputValue(workflowExecution, "result", RUN_TIMEOUT_S, TimeUnit.SECONDS),
-            2
-        );
-        long executionId = WorkflowExecutions.getExecutionId(workflowExecution, RUN_TIMEOUT_S, TimeUnit.SECONDS);
-        WorkflowExecutions.awaitFinish(workflowExecution, RUN_TIMEOUT_S, TimeUnit.SECONDS);
+        Assert.assertEquals(workflowExecution.getOutput("result").get(RUN_TIMEOUT_S, TimeUnit.SECONDS), 2);
+        long executionId = workflowExecution.getExecutionId().get(RUN_TIMEOUT_S, TimeUnit.SECONDS);
+        workflowExecution.toCompletableFuture().get(RUN_TIMEOUT_S, TimeUnit.SECONDS);
 
         Entities.TablesContent tablesContent = Entities.getTablesContent(executionId, entityManagerFactory);
         List<ExecutionFrame> executionFrames = tablesContent.getExecutionFrames();
@@ -264,12 +263,9 @@ public class ITWorkflowServiceComponent {
             .setOverrides(newOverridesList())
             .start();
 
-        Assert.assertEquals(
-            WorkflowExecutions.getOutputValue(workflowExecution, "sum", RUN_TIMEOUT_S, TimeUnit.SECONDS),
-            34
-        );
-        long executionId = WorkflowExecutions.getExecutionId(workflowExecution, RUN_TIMEOUT_S, TimeUnit.SECONDS);
-        WorkflowExecutions.awaitFinish(workflowExecution, RUN_TIMEOUT_S, TimeUnit.SECONDS);
+        Assert.assertEquals(workflowExecution.getOutput("sum").get(RUN_TIMEOUT_S, TimeUnit.SECONDS), 34);
+        long executionId = workflowExecution.getExecutionId().get(RUN_TIMEOUT_S, TimeUnit.SECONDS);
+        workflowExecution.toCompletableFuture().get(RUN_TIMEOUT_S, TimeUnit.SECONDS);
 
         Entities.TablesContent tablesContent = Entities.getTablesContent(executionId, entityManagerFactory);
         List<ExecutionFrame> executionFrames = tablesContent.getExecutionFrames();
@@ -325,11 +321,15 @@ public class ITWorkflowServiceComponent {
             .setBundleIdentifiers(Collections.singletonList(bundleIdentifier))
             .setOverrides(newOverridesList())
             .start();
-        long executionId = WorkflowExecutions.getExecutionId(workflowExecution, RUN_TIMEOUT_S, TimeUnit.SECONDS);
+        long executionId = workflowExecution.getExecutionId().get(RUN_TIMEOUT_S, TimeUnit.SECONDS);
         try {
-            WorkflowExecutions.awaitFinish(workflowExecution, RUN_TIMEOUT_S, TimeUnit.SECONDS);
+            workflowExecution.toCompletableFuture().get(RUN_TIMEOUT_S, TimeUnit.SECONDS);
             Assert.fail("Expected exception.");
-        } catch (AwaitException ignored) { }
+        } catch (ExecutionException executionException) {
+            InterpreterException interpreterException = (InterpreterException) executionException.getCause();
+            Exception userException = (Exception) interpreterException.getCause();
+            Assert.assertTrue(userException.getMessage().contains(ThrowingModule.ExpectedException.class.getName()));
+        }
 
         Entities.TablesContent tablesContent = Entities.getTablesContent(executionId, entityManagerFactory);
         List<ExecutionFrame> executionFrames = tablesContent.getExecutionFrames();
@@ -397,7 +397,7 @@ public class ITWorkflowServiceComponent {
             .setBundleIdentifiers(Collections.singletonList(bundleIdentifier))
             .setOverrides(newOverridesList())
             .start();
-        long executionId = WorkflowExecutions.getExecutionId(workflowExecution, RUN_TIMEOUT_S, TimeUnit.SECONDS);
+        long executionId = workflowExecution.getExecutionId().get(RUN_TIMEOUT_S, TimeUnit.SECONDS);
 
         // Wait a little for the active execution
         Thread.sleep(50);

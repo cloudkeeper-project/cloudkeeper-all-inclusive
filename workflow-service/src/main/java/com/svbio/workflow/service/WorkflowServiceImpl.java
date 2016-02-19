@@ -3,6 +3,7 @@ package com.svbio.workflow.service;
 import akka.actor.ActorRef;
 import akka.dispatch.Futures;
 import akka.dispatch.OnComplete;
+import akka.dispatch.OnFailure;
 import akka.pattern.AskTimeoutException;
 import akka.pattern.Patterns;
 import com.svbio.cloudkeeper.model.api.CloudKeeperEnvironment;
@@ -148,49 +149,58 @@ final class WorkflowServiceImpl implements WorkflowService {
             public WorkflowExecution start() {
                 ExecuteWorkflowRequest copiedRequest = new ExecuteWorkflowRequest(request);
 
+                // Promise that will be completed once all actors in executionObservers have responded to the
+                // StopExecutionEvent message (or timed out). This gives each observer some grace period to perform
+                // clean up tasks before the WorkflowExecution instance finishes (as indicated, e.g., by
+                // WorkflowExecution#isRunning()).
                 Promise<Iterable<Object>> observerCompletionPromise = Futures.promise();
-
-                WorkflowExecution workflowExecution = builder.start();
-                workflowExecution.whenHasExecutionId(
-                    (@Nullable Throwable executionIdThrowable, @Nullable Long executionId) -> {
-                        if (executionIdThrowable != null) {
-                            observerCompletionPromise.complete(new Failure<>(executionIdThrowable));
-                        } else {
-                            assert executionId != null;
-                            workflowExecution.whenHasRootExecutionTrace(
-                                (@Nullable Throwable throwable, @Nullable RuntimeAnnotatedExecutionTrace rootTrace) -> {
-                                    if (throwable == null) {
-                                        assert rootTrace != null;
-                                        StartExecutionEvent startExecutionEvent
-                                            = new StartExecutionEvent(executionId, rootTrace, prefix);
-                                        executionObservers.forEach(
-                                            observer -> observer.tell(startExecutionEvent, ActorRef.noSender())
-                                        );
-                                    }
-                                }
-                            );
-
-                            addActiveExecution(copiedRequest, executionId, workflowExecution);
-                            workflowExecution.whenExecutionFinished(
-                                (@Nullable Throwable finishedThrowable, @Nullable Void ignored) -> {
-                                    workflowExecutionFinished(executionId, finishedThrowable);
-
-                                    StopExecutionEvent event = new StopExecutionEvent(executionId);
-                                    // Patterns.ask completes the returned future with a AskTimeoutException if the
-                                    // actor does not respond within the given timeout
-                                    List<Future<Object>> observerResponseFutures = executionObservers.stream()
-                                        .map(observer -> Patterns.ask(observer, event, OBSERVER_TIMEOUT_MS))
-                                        .collect(Collectors.toList());
-                                    observerCompletionPromise.completeWith(
-                                        Futures.sequence(observerResponseFutures, executionContext)
-                                    );
-                                }
-                            );
+                observerCompletionPromise.future().onFailure(new OnFailure() {
+                    @Override
+                    public void onFailure(Throwable failure) {
+                        if (failure instanceof AskTimeoutException) {
+                            log.warn("Workflow execution finished while at least some execution observers {} did not "
+                                + "shut down in time.", executionObservers);
                         }
                     }
-                );
+                }, executionContext);
 
-                return new WorkflowExecutionImpl(workflowExecution, observerCompletionPromise.future());
+                WorkflowExecution workflowExecution = builder.start();
+                workflowExecution.getExecutionId().whenComplete((executionId, executionIdThrowable) -> {
+                    if (executionIdThrowable != null) {
+                        observerCompletionPromise.complete(new Failure<>(executionIdThrowable));
+                    } else {
+                        assert executionId != null;
+                        workflowExecution.getTrace().whenComplete((rootTrace, throwable) -> {
+                            if (throwable == null) {
+                                assert rootTrace != null;
+                                StartExecutionEvent startExecutionEvent
+                                    = new StartExecutionEvent(executionId, rootTrace, prefix);
+                                executionObservers.forEach(
+                                    observer -> observer.tell(startExecutionEvent, ActorRef.noSender())
+                                );
+                            }
+                        });
+
+                        addActiveExecution(copiedRequest, executionId, workflowExecution);
+                        workflowExecution.toCompletableFuture().whenComplete(
+                            (Void ignored, Throwable finishedThrowable) -> {
+                                workflowExecutionFinished(executionId, finishedThrowable);
+
+                                StopExecutionEvent event = new StopExecutionEvent(executionId);
+                                // Patterns.ask completes the returned future with a AskTimeoutException if the
+                                // actor does not respond within the given timeout
+                                List<Future<Object>> observerResponseFutures = executionObservers.stream()
+                                    .map(observer -> Patterns.ask(observer, event, OBSERVER_TIMEOUT_MS))
+                                    .collect(Collectors.toList());
+                                observerCompletionPromise.completeWith(
+                                    Futures.sequence(observerResponseFutures, executionContext)
+                                );
+                            }
+                        );
+                    }
+                });
+
+                return new WorkflowExecutionImpl(workflowExecution, observerCompletionPromise.future(), executionContext);
             }
 
             private void addActiveExecution(ExecuteWorkflowRequest request, long executionId,
@@ -208,14 +218,24 @@ final class WorkflowServiceImpl implements WorkflowService {
         }
     }
 
-    private final class WorkflowExecutionImpl implements WorkflowExecution {
+    private static final class WorkflowExecutionImpl implements WorkflowExecution {
         private final WorkflowExecution workflowExecution;
-        private final Future<Iterable<Object>> listenerCompletionFuture;
+
+        /**
+         * Future that is guaranteed to be completed normally.
+         */
+        private final CompletableFuture<Void> observerResponsesFuture;
 
         private WorkflowExecutionImpl(WorkflowExecution workflowExecution,
-                Future<Iterable<Object>> listenerCompletionFuture) {
+                Future<Iterable<Object>> observerResponsesFuture, ExecutionContext executionContext) {
             this.workflowExecution = workflowExecution;
-            this.listenerCompletionFuture = listenerCompletionFuture;
+            this.observerResponsesFuture = new CompletableFuture<>();
+            observerResponsesFuture.onComplete(new OnComplete<Iterable<Object>>() {
+                @Override
+                public void onComplete(@Nullable Throwable failure, @Nullable Iterable<Object> success) {
+                    WorkflowExecutionImpl.this.observerResponsesFuture.complete(null);
+                }
+            }, executionContext);
         }
 
         @Override
@@ -229,46 +249,46 @@ final class WorkflowServiceImpl implements WorkflowService {
         }
 
         @Override
-        public void whenHasRootExecutionTrace(
-                OnActionComplete<RuntimeAnnotatedExecutionTrace> onHasRootExecutionTrace) {
-            workflowExecution.whenHasRootExecutionTrace(onHasRootExecutionTrace);
+        public CompletableFuture<RuntimeAnnotatedExecutionTrace> getTrace() {
+            return workflowExecution.getTrace();
         }
 
         @Override
-        public void whenHasExecutionId(OnActionComplete<Long> onHasExecutionId) {
-            workflowExecution.whenHasExecutionId(onHasExecutionId);
+        public CompletableFuture<Long> getExecutionId() {
+            return workflowExecution.getExecutionId();
         }
 
         @Override
         public boolean isRunning() {
-            return !listenerCompletionFuture.isCompleted() || workflowExecution.isRunning();
+            return !observerResponsesFuture.isDone() || workflowExecution.isRunning();
         }
 
         @Override
-        public void whenHasOutput(String outPortName, OnActionComplete<Object> onHasOutput) {
-            workflowExecution.whenHasOutput(outPortName, onHasOutput);
+        public CompletableFuture<Object> getOutput(String outPortName) {
+            return workflowExecution.getOutput(outPortName);
         }
 
         @Override
-        public void whenHasFinishTimeMillis(OnActionComplete<Long> onHasFinishTimeMillis) {
-            workflowExecution.whenHasFinishTimeMillis(onHasFinishTimeMillis);
+        public CompletableFuture<Long> getFinishTimeMillis() {
+            return workflowExecution.getFinishTimeMillis();
         }
 
         @Override
-        public void whenExecutionFinished(OnActionComplete<Void> onExecutionFinished) {
-            workflowExecution.whenExecutionFinished(
-                (throwable, value) -> listenerCompletionFuture.onComplete(new OnComplete<Iterable<Object>>() {
-                    @Override
-                    public void onComplete(@Nullable Throwable listenerCompletionFailure,
-                            @Nullable Iterable<Object> success) {
-                        if (listenerCompletionFailure instanceof AskTimeoutException) {
-                            log.warn("Workflow execution finished while execution observers {} may still be active.",
-                                executionObservers);
-                        }
-                        onExecutionFinished.complete(throwable, value);
+        public CompletableFuture<Void> toCompletableFuture() {
+            // CompletableFuture#thenCompose wraps failures in a CompletionException, which is not acceptable here.
+            // Hence, we need to implement the composition explicitly.
+            CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+            observerResponsesFuture.whenComplete((ignoredObserversResult, observersFailure) -> {
+                assert observersFailure == null : "observerResponsesFuture must always be completed normally";
+                workflowExecution.toCompletableFuture().whenComplete((result, failure) -> {
+                    if (failure != null) {
+                        completableFuture.completeExceptionally(failure);
+                    } else {
+                        completableFuture.complete(result);
                     }
-                }, executionContext)
-            );
+                });
+            });
+            return completableFuture;
         }
     }
 

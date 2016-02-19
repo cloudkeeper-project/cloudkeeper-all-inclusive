@@ -1,11 +1,11 @@
 package com.svbio.workflow.service;
 
 import com.svbio.workflow.bundles.core.Requirements;
-import com.svbio.cloudkeeper.model.runtime.execution.RuntimeAnnotatedExecutionTrace;
 import org.mockito.Mockito;
 import org.slf4j.impl.SimpleLogger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import xyz.cloudkeeper.model.runtime.execution.RuntimeAnnotatedExecutionTrace;
 
 import java.util.Arrays;
 import java.util.Collections;

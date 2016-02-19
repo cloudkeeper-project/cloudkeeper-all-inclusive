@@ -112,46 +112,46 @@
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-interpreter</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-linker</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-model</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-basic</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.executors</groupId>
+            <groupId>xyz.cloudkeeper.executors</groupId>
             <artifactId>cloudkeeper-drmaa_1.0</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.executors</groupId>
+            <groupId>xyz.cloudkeeper.executors</groupId>
             <artifactId>cloudkeeper-drmaa-executor</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.executors</groupId>
+            <groupId>xyz.cloudkeeper.executors</groupId>
             <artifactId>cloudkeeper-forking-executor</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper</groupId>
+            <groupId>xyz.cloudkeeper</groupId>
             <artifactId>cloudkeeper-file-staging</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <groupId>xyz.cloudkeeper.maven</groupId>
             <artifactId>cloudkeeper-maven-bundles</artifactId>
         </dependency>
 
@@ -234,13 +234,13 @@
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-testkit</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <groupId>xyz.cloudkeeper.maven</groupId>
             <artifactId>cloudkeeper-maven-testkit</artifactId>
             <type>test-jar</type>
             <scope>test</scope>

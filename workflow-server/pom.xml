@@ -90,7 +90,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-model</artifactId>
         </dependency>
 

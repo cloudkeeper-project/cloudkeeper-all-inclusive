@@ -1,11 +1,11 @@
 package com.svbio.workflow.service;
 
-import com.svbio.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
 import org.slf4j.impl.SimpleLogger;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import xyz.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
 
 import javax.annotation.Nullable;
 import java.io.File;

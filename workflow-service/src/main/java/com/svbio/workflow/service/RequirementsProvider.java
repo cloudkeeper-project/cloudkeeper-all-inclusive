@@ -1,7 +1,7 @@
 package com.svbio.workflow.service;
 
 import com.svbio.workflow.bundles.core.Requirements;
-import com.svbio.cloudkeeper.model.runtime.execution.RuntimeAnnotatedExecutionTrace;
+import xyz.cloudkeeper.model.runtime.execution.RuntimeAnnotatedExecutionTrace;
 
 import javax.annotation.Nullable;
 import java.util.Objects;

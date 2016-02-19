@@ -119,11 +119,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-model</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <groupId>xyz.cloudkeeper.maven</groupId>
             <artifactId>cloudkeeper-maven-bundles</artifactId>
         </dependency>
 
@@ -164,7 +164,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-api</artifactId>
             <scope>test</scope>
         </dependency>

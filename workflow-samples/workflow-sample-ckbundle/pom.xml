@@ -22,7 +22,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.svbio.cloudkeeper.maven</groupId>
+                <groupId>xyz.cloudkeeper.maven</groupId>
                 <artifactId>cloudkeeper-maven-plugin</artifactId>
             </plugin>
 
@@ -61,11 +61,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-dsl</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-model</artifactId>
         </dependency>
 
@@ -76,7 +76,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-basic</artifactId>
             <scope>test</scope>
         </dependency>
@@ -88,7 +88,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-api</artifactId>
             <scope>test</scope>
         </dependency>

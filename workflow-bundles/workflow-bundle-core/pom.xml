@@ -21,7 +21,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.svbio.cloudkeeper.maven</groupId>
+                <groupId>xyz.cloudkeeper.maven</groupId>
                 <artifactId>cloudkeeper-maven-plugin</artifactId>
             </plugin>
         </plugins>
@@ -29,7 +29,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-dsl</artifactId>
         </dependency>
     </dependencies>

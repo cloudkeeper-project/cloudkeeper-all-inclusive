@@ -1,10 +1,10 @@
 package com.svbio.workflow.runtimecontext;
 
-import com.svbio.cloudkeeper.model.api.RuntimeContextFactory;
-import com.svbio.cloudkeeper.simple.DSLRuntimeContextFactory;
 import dagger.Module;
 import dagger.Provides;
 import scala.concurrent.ExecutionContext;
+import xyz.cloudkeeper.model.api.RuntimeContextFactory;
+import xyz.cloudkeeper.simple.DSLRuntimeContextFactory;
 
 import javax.inject.Singleton;
 

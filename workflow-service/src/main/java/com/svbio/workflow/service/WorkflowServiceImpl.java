@@ -6,16 +6,6 @@ import akka.dispatch.OnComplete;
 import akka.dispatch.OnFailure;
 import akka.pattern.AskTimeoutException;
 import akka.pattern.Patterns;
-import com.svbio.cloudkeeper.model.api.CloudKeeperEnvironment;
-import com.svbio.cloudkeeper.model.api.WorkflowExecution;
-import com.svbio.cloudkeeper.model.api.WorkflowExecutionBuilder;
-import com.svbio.cloudkeeper.model.bare.element.module.BareModule;
-import com.svbio.cloudkeeper.model.bare.execution.BareOverride;
-import com.svbio.cloudkeeper.model.beans.element.module.MutableModule;
-import com.svbio.cloudkeeper.model.beans.execution.MutableOverride;
-import com.svbio.cloudkeeper.model.immutable.element.SimpleName;
-import com.svbio.cloudkeeper.model.runtime.execution.RuntimeAnnotatedExecutionTrace;
-import com.svbio.cloudkeeper.model.util.ImmutableList;
 import com.svbio.workflow.api.ExecuteWorkflowRequest;
 import com.svbio.workflow.api.ExecutionStatus;
 import com.svbio.workflow.api.ExecutionStatusList;
@@ -28,6 +18,16 @@ import scala.concurrent.ExecutionContext;
 import scala.concurrent.Future;
 import scala.concurrent.Promise;
 import scala.util.Failure;
+import xyz.cloudkeeper.model.api.CloudKeeperEnvironment;
+import xyz.cloudkeeper.model.api.WorkflowExecution;
+import xyz.cloudkeeper.model.api.WorkflowExecutionBuilder;
+import xyz.cloudkeeper.model.bare.element.module.BareModule;
+import xyz.cloudkeeper.model.bare.execution.BareOverride;
+import xyz.cloudkeeper.model.beans.element.module.MutableModule;
+import xyz.cloudkeeper.model.beans.execution.MutableOverride;
+import xyz.cloudkeeper.model.immutable.element.SimpleName;
+import xyz.cloudkeeper.model.runtime.execution.RuntimeAnnotatedExecutionTrace;
+import xyz.cloudkeeper.model.util.ImmutableList;
 
 import javax.annotation.Nullable;
 import java.net.URI;
@@ -63,7 +63,7 @@ final class WorkflowServiceImpl implements WorkflowService {
      * <p>There are a few places in this code where {@code synchronized} blocks contain more than just a single
      * {@link Map} method call. Therefore, {@link Collections#synchronizedMap(Map)} is not an equivalent alternative.
      * For instance, {@link #workflowExecutionFinished} also modifies a value contained in the map. (Unfortunately, in
-     * order to use JAXB, the classes in package {@link com.svbio.cloudkeeper.model.api} are mutable POJOs. This
+     * order to use JAXB, the classes in package {@link xyz.cloudkeeper.model.api} are mutable POJOs. This
      * requires extra work to ensure memory consistency across threads. At some places, {@code synchronized} is used
      * also for that reason.)
      */

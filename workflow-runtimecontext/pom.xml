@@ -87,32 +87,32 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-basic</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-dsl</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-linker</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-model</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <groupId>xyz.cloudkeeper.maven</groupId>
             <artifactId>cloudkeeper-maven-bundle-loader</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <groupId>xyz.cloudkeeper.maven</groupId>
             <artifactId>cloudkeeper-maven-bundles</artifactId>
         </dependency>
 
@@ -205,13 +205,13 @@
         </dependency>
 
         <dependency>
-            <groupId>com.svbio.cloudkeeper.core</groupId>
+            <groupId>xyz.cloudkeeper.core</groupId>
             <artifactId>cloudkeeper-testkit</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.svbio.cloudkeeper.maven</groupId>
+            <groupId>xyz.cloudkeeper.maven</groupId>
             <artifactId>cloudkeeper-maven-testkit</artifactId>
             <type>test-jar</type>
             <scope>test</scope>

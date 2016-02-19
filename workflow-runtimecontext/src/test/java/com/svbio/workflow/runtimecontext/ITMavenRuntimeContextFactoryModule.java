@@ -1,8 +1,5 @@
 package com.svbio.workflow.runtimecontext;
 
-import com.svbio.cloudkeeper.maven.FileLockSyncContextFactory;
-import com.svbio.cloudkeeper.model.LinkerException;
-import com.svbio.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
 import com.svbio.workflow.runtimecontext.MavenRuntimeContextFactoryModule.AetherConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -15,6 +12,9 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import xyz.cloudkeeper.maven.FileLockSyncContextFactory;
+import xyz.cloudkeeper.model.LinkerException;
+import xyz.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
 
 import java.io.IOException;
 import java.nio.file.Files;

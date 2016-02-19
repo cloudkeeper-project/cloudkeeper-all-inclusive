@@ -44,9 +44,9 @@ public class DRMAAProperties extends ProcessLauncherProperties<DRMAAProperties> 
      * Returns the native arguments used for this DRMAA job submission.
      *
      * <p>The returned string is the value of property
-     * {@link com.svbio.cloudkeeper.drm.DrmaaSimpleModuleExecutor#NATIVE_ARGUMENTS} in the
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
-     * {@link com.svbio.cloudkeeper.drm.DrmaaSimpleModuleExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
+     * {@link xyz.cloudkeeper.drm.DrmaaSimpleModuleExecutor#NATIVE_ARGUMENTS} in the
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
+     * {@link xyz.cloudkeeper.drm.DrmaaSimpleModuleExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
      */
     @Column(length = 256)
     @Nullable

@@ -82,7 +82,7 @@ public abstract class ExecutionFrameProperties<D extends ExecutionFramePropertie
 
     /**
      * Returns the name of the implementing class of
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor} used to execute the simple module.
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor} used to execute the simple module.
      */
     @Nullable
     public String getWorkerName() {
@@ -96,13 +96,13 @@ public abstract class ExecutionFrameProperties<D extends ExecutionFramePropertie
 
     /**
      * Returns the timestamp immediately after
-     * {@link com.svbio.cloudkeeper.simple.LocalSimpleModuleExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}
+     * {@link xyz.cloudkeeper.simple.LocalSimpleModuleExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}
      * was called.
      *
      * <p>The returned timestamp is the value of property
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor#SUBMISSION_TIME_MILLIS} in the
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} that the future returned by
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor#SUBMISSION_TIME_MILLIS} in the
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} that the future returned by
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}
      * was completed with.
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -122,13 +122,13 @@ public abstract class ExecutionFrameProperties<D extends ExecutionFramePropertie
 
     /**
      * Returns the timestamp immediately before the future returned by
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}
      * was completed.
      *
      * <p>The returned timestamp is the value of property
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor#COMPLETION_TIME_MILLIS} in the
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} that the future returned by
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor#COMPLETION_TIME_MILLIS} in the
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} that the future returned by
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}
      * was completed with.
      */
     @Temporal(TemporalType.TIMESTAMP)

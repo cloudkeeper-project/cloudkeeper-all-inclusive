@@ -1,7 +1,7 @@
 package com.svbio.workflow.api;
 
-import com.svbio.cloudkeeper.model.beans.element.module.MutableModule;
-import com.svbio.cloudkeeper.model.beans.execution.MutableOverride;
+import xyz.cloudkeeper.model.beans.element.module.MutableModule;
+import xyz.cloudkeeper.model.beans.execution.MutableOverride;
 
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlElement;

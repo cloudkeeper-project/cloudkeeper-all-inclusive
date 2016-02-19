@@ -1,18 +1,18 @@
 package com.svbio.workflow.runtimecontext;
 
-import com.svbio.cloudkeeper.model.api.RuntimeContextFactory;
-import com.svbio.cloudkeeper.model.api.staging.InstanceProvider;
-import com.svbio.cloudkeeper.simple.LocalSimpleModuleExecutor;
 import com.svbio.workflow.base.BaseComponent;
 import com.svbio.workflow.base.ConfigModule;
 import com.svbio.workflow.base.ExecutionContextModule;
 import com.svbio.workflow.base.LifecycleManagerModule;
 import dagger.Component;
+import xyz.cloudkeeper.model.api.RuntimeContextFactory;
+import xyz.cloudkeeper.model.api.staging.InstanceProvider;
+import xyz.cloudkeeper.simple.LocalSimpleModuleExecutor;
 
 import javax.inject.Singleton;
 
 /**
- * Dagger component that provides a {@link com.svbio.cloudkeeper.maven.MavenRuntimeContextFactory} and related services.
+ * Dagger component that provides a {@link xyz.cloudkeeper.maven.MavenRuntimeContextFactory} and related services.
  *
  * <p>This component is a root-level component with no dependencies.
  */
@@ -29,7 +29,7 @@ import javax.inject.Singleton;
 @Singleton
 public interface RuntimeContextComponent extends BaseComponent {
     /**
-     * Returns the {@link RuntimeContextFactory} for creating {@link com.svbio.cloudkeeper.model.api.RuntimeContext}
+     * Returns the {@link RuntimeContextFactory} for creating {@link xyz.cloudkeeper.model.api.RuntimeContext}
      * instances.
      *
      * @return the {@link RuntimeContextFactory}
@@ -38,7 +38,7 @@ public interface RuntimeContextComponent extends BaseComponent {
 
     /**
      * Returns the {@link InstanceProvider} that can be given to other CloudKeeper providers (such as
-     * {@link com.svbio.cloudkeeper.model.api.staging.StagingAreaProvider}) as context.
+     * {@link xyz.cloudkeeper.model.api.staging.StagingAreaProvider}) as context.
      *
      * @return the {@link InstanceProvider}
      */

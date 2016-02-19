@@ -1,10 +1,5 @@
 package com.svbio.workflow.service;
 
-import com.svbio.cloudkeeper.drm.DrmaaSimpleModuleExecutor;
-import com.svbio.cloudkeeper.drm.NativeSpecificationProvider;
-import com.svbio.cloudkeeper.executors.CommandProvider;
-import com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor;
-import com.svbio.cloudkeeper.model.api.staging.InstanceProvider;
 import com.svbio.workflow.base.LifecycleManager;
 import com.svbio.workflow.base.LifecyclePhase;
 import com.svbio.workflow.base.LifecyclePhaseListener;
@@ -15,6 +10,11 @@ import org.ggf.drmaa.DrmaaException;
 import org.ggf.drmaa.Session;
 import org.ggf.drmaa.SessionFactory;
 import scala.concurrent.ExecutionContext;
+import xyz.cloudkeeper.drm.DrmaaSimpleModuleExecutor;
+import xyz.cloudkeeper.drm.NativeSpecificationProvider;
+import xyz.cloudkeeper.executors.CommandProvider;
+import xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor;
+import xyz.cloudkeeper.model.api.staging.InstanceProvider;
 
 import javax.inject.Inject;
 import java.nio.file.Path;

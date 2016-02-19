@@ -1,6 +1,6 @@
 package com.svbio.workflow.service;
 
-import com.svbio.cloudkeeper.model.api.CloudKeeperEnvironment;
+import xyz.cloudkeeper.model.api.CloudKeeperEnvironment;
 
 /**
  * Factory of {@link CloudKeeperEnvironment} instances.

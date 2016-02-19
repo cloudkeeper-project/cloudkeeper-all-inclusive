@@ -4,4 +4,4 @@
 @NonNullByDefault
 package com.svbio.workflow.bundles.marshalers;
 
-import com.svbio.cloudkeeper.model.util.NonNullByDefault;
+import xyz.cloudkeeper.model.util.NonNullByDefault;

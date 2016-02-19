@@ -1,12 +1,5 @@
 package com.svbio.workflow.samples.embeddedck;
 
-import com.svbio.cloudkeeper.maven.Bundles;
-import com.svbio.cloudkeeper.model.api.CloudKeeperEnvironment;
-import com.svbio.cloudkeeper.model.api.WorkflowExecution;
-import com.svbio.cloudkeeper.model.beans.element.module.MutableModule;
-import com.svbio.cloudkeeper.model.beans.element.module.MutableProxyModule;
-import com.svbio.cloudkeeper.model.immutable.element.SimpleName;
-import com.svbio.cloudkeeper.model.immutable.element.Version;
 import com.svbio.workflow.base.ConfigModule;
 import com.svbio.workflow.base.LifecycleManager;
 import com.svbio.workflow.base.LifecycleManagerModule;
@@ -15,6 +8,13 @@ import com.svbio.workflow.runtimecontext.RuntimeContextComponent;
 import com.svbio.workflow.service.DaggerWorkflowServiceComponent;
 import com.svbio.workflow.service.WorkflowServiceComponent;
 import com.typesafe.config.Config;
+import xyz.cloudkeeper.maven.Bundles;
+import xyz.cloudkeeper.model.api.CloudKeeperEnvironment;
+import xyz.cloudkeeper.model.api.WorkflowExecution;
+import xyz.cloudkeeper.model.beans.element.module.MutableModule;
+import xyz.cloudkeeper.model.beans.element.module.MutableProxyModule;
+import xyz.cloudkeeper.model.immutable.element.SimpleName;
+import xyz.cloudkeeper.model.immutable.element.Version;
 
 import javax.annotation.Nullable;
 import java.io.IOException;

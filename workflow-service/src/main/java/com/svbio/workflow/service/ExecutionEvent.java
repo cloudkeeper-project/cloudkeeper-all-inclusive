@@ -3,7 +3,7 @@ package com.svbio.workflow.service;
 import javax.annotation.Nullable;
 
 /**
- * Abstract base class of events published by {@link com.svbio.cloudkeeper.model.api.WorkflowExecution} instances
+ * Abstract base class of events published by {@link xyz.cloudkeeper.model.api.WorkflowExecution} instances
  * descending from {@link com.svbio.workflow.api.WorkflowService}.
  */
 abstract class ExecutionEvent {

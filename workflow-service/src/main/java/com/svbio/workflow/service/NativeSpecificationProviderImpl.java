@@ -1,9 +1,9 @@
 package com.svbio.workflow.service;
 
-import com.svbio.cloudkeeper.drm.NativeSpecificationProvider;
-import com.svbio.cloudkeeper.model.runtime.execution.RuntimeAnnotatedExecutionTrace;
 import com.svbio.workflow.bundles.core.Requirements;
 import com.svbio.workflow.service.RequirementsProvider.ActualRequirements;
+import xyz.cloudkeeper.drm.NativeSpecificationProvider;
+import xyz.cloudkeeper.model.runtime.execution.RuntimeAnnotatedExecutionTrace;
 
 import java.util.Objects;
 

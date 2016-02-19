@@ -123,9 +123,9 @@ public class ExecutionFrame {
      * Returns the identifier of this execution frame (also called execution trace).
      *
      * <p>This method returns an execution trace that is a valid string representation of a
-     * {@link com.svbio.cloudkeeper.model.immutable.execution.ExecutionTrace} instance.
+     * {@link xyz.cloudkeeper.model.immutable.execution.ExecutionTrace} instance.
      *
-     * @see com.svbio.cloudkeeper.model.immutable.execution.ExecutionTrace
+     * @see xyz.cloudkeeper.model.immutable.execution.ExecutionTrace
      */
     @Id
     @Column(length = 1024)

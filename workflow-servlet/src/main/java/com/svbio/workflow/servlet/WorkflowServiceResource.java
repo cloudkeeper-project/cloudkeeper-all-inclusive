@@ -1,11 +1,11 @@
 package com.svbio.workflow.servlet;
 
-import com.svbio.cloudkeeper.model.api.WorkflowExecution;
 import com.svbio.workflow.api.ExecuteWorkflowRequest;
 import com.svbio.workflow.api.ExecutionStatus;
 import com.svbio.workflow.api.ExecutionStatusList;
 import com.svbio.workflow.api.UnknownExecutionIdException;
 import com.svbio.workflow.api.WorkflowService;
+import xyz.cloudkeeper.model.api.WorkflowExecution;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;

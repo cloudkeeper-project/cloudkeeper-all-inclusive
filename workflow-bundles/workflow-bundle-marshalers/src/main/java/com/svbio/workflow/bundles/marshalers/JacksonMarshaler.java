@@ -5,12 +5,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.svbio.cloudkeeper.dsl.SerializationPlugin;
-import com.svbio.cloudkeeper.model.api.MarshalContext;
-import com.svbio.cloudkeeper.model.api.Marshaler;
-import com.svbio.cloudkeeper.model.api.MarshalingException;
-import com.svbio.cloudkeeper.model.api.UnmarshalContext;
-import com.svbio.cloudkeeper.model.immutable.element.NoKey;
+import xyz.cloudkeeper.dsl.SerializationPlugin;
+import xyz.cloudkeeper.model.api.MarshalContext;
+import xyz.cloudkeeper.model.api.Marshaler;
+import xyz.cloudkeeper.model.api.MarshalingException;
+import xyz.cloudkeeper.model.api.UnmarshalContext;
+import xyz.cloudkeeper.model.immutable.element.NoKey;
 
 import java.io.IOException;
 import java.io.InputStream;

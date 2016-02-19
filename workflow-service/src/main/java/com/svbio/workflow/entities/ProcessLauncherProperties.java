@@ -45,10 +45,10 @@ public abstract class ProcessLauncherProperties<D extends ProcessLauncherPropert
     /**
      * Returns the command line that was used to start the process executing the simple module.
      *
-     * <p>If a {@link com.svbio.cloudkeeper.executors.ForkingExecutor} was configured, the returned string is the
-     * value of property {@link com.svbio.cloudkeeper.executors.ForkingExecutor#COMMAND_LINE} in the
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
-     * {@link com.svbio.cloudkeeper.executors.ForkingExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
+     * <p>If a {@link xyz.cloudkeeper.executors.ForkingExecutor} was configured, the returned string is the
+     * value of property {@link xyz.cloudkeeper.executors.ForkingExecutor#COMMAND_LINE} in the
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
+     * {@link xyz.cloudkeeper.executors.ForkingExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
      *
      * <p>If another executor was configured, this field contains a corresponding property.
      */
@@ -66,10 +66,10 @@ public abstract class ProcessLauncherProperties<D extends ProcessLauncherPropert
     /**
      * Returns the exit value of the process that executed the simple module.
      *
-     * <p>If a {@link com.svbio.cloudkeeper.executors.ForkingExecutor} was configured, the returned timestamp is the
-     * value of property {@link com.svbio.cloudkeeper.executors.ForkingExecutor#EXIT_VALUE} in the
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
-     * {@link com.svbio.cloudkeeper.executors.ForkingExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
+     * <p>If a {@link xyz.cloudkeeper.executors.ForkingExecutor} was configured, the returned timestamp is the
+     * value of property {@link xyz.cloudkeeper.executors.ForkingExecutor#EXIT_VALUE} in the
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
+     * {@link xyz.cloudkeeper.executors.ForkingExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
      *
      * <p>If another executor was configured, this field contains a corresponding property.
      */
@@ -87,8 +87,8 @@ public abstract class ProcessLauncherProperties<D extends ProcessLauncherPropert
      * Returns the timestamp immediately after {@link com.svbio.workflow.forkedexecutor.ForkedExecutor} started.
      *
      * <p>The returned timestamp is the value of property
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor#SUBMISSION_TIME_MILLIS} in the
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} written to stdout by
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor#SUBMISSION_TIME_MILLIS} in the
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} written to stdout by
      * {@link com.svbio.workflow.forkedexecutor.ForkedExecutor#main(String[])}.
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -108,13 +108,13 @@ public abstract class ProcessLauncherProperties<D extends ProcessLauncherPropert
 
     /**
      * Returns the timestamp immediately before
-     * {@link com.svbio.cloudkeeper.model.api.Executable#run(com.svbio.cloudkeeper.model.api.ModuleConnector)}
+     * {@link xyz.cloudkeeper.model.api.Executable#run(xyz.cloudkeeper.model.api.ModuleConnector)}
      * was called.
      *
      * <p>The returned timestamp is the value of property
-     * {@link com.svbio.cloudkeeper.simple.LocalSimpleModuleExecutor#PROCESSING_START_TIME_MILLIS} in the
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
-     * {@link com.svbio.cloudkeeper.simple.LocalSimpleModuleExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
+     * {@link xyz.cloudkeeper.simple.LocalSimpleModuleExecutor#PROCESSING_START_TIME_MILLIS} in the
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
+     * {@link xyz.cloudkeeper.simple.LocalSimpleModuleExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Nullable
@@ -133,13 +133,13 @@ public abstract class ProcessLauncherProperties<D extends ProcessLauncherPropert
 
     /**
      * Returns the timestamp immediately after
-     * {@link com.svbio.cloudkeeper.model.api.Executable#run(com.svbio.cloudkeeper.model.api.ModuleConnector)}
+     * {@link xyz.cloudkeeper.model.api.Executable#run(xyz.cloudkeeper.model.api.ModuleConnector)}
      * returned.
      *
      * <p>The returned timestamp is the value of property
-     * {@link com.svbio.cloudkeeper.simple.LocalSimpleModuleExecutor#PROCESSING_FINISH_TIME_MILLIS} in the
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
-     * {@link com.svbio.cloudkeeper.simple.LocalSimpleModuleExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
+     * {@link xyz.cloudkeeper.simple.LocalSimpleModuleExecutor#PROCESSING_FINISH_TIME_MILLIS} in the
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} returned by
+     * {@link xyz.cloudkeeper.simple.LocalSimpleModuleExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)}.
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Nullable
@@ -160,8 +160,8 @@ public abstract class ProcessLauncherProperties<D extends ProcessLauncherPropert
      * Returns the timestamp immediately before {@link com.svbio.workflow.forkedexecutor.ForkedExecutor} terminated.
      *
      * <p>The returned timestamp is the value of property
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor#COMPLETION_TIME_MILLIS} in the
-     * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} written to stdout by
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor#COMPLETION_TIME_MILLIS} in the
+     * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} written to stdout by
      * {@link com.svbio.workflow.forkedexecutor.ForkedExecutor#main(String[])}.
      */
     @Temporal(TemporalType.TIMESTAMP)

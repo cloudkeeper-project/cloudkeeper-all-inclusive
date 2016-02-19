@@ -1,6 +1,6 @@
 package com.svbio.workflow.bundles.core;
 
-import com.svbio.cloudkeeper.dsl.AnnotationTypePlugin;
+import xyz.cloudkeeper.dsl.AnnotationTypePlugin;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,8 +1,8 @@
 package com.svbio.workflow.samples.ckbundle;
 
-import com.svbio.cloudkeeper.dsl.SimpleModule;
-import com.svbio.cloudkeeper.dsl.SimpleModulePlugin;
 import com.svbio.workflow.bundles.core.Requirements;
+import xyz.cloudkeeper.dsl.SimpleModule;
+import xyz.cloudkeeper.dsl.SimpleModulePlugin;
 
 /**
  * Simple module that computes the digits of the decimal representation of π.

@@ -1,7 +1,7 @@
 package com.svbio.workflow.api;
 
-import com.svbio.cloudkeeper.model.api.CloudKeeperEnvironment;
-import com.svbio.cloudkeeper.model.api.WorkflowExecution;
+import xyz.cloudkeeper.model.api.CloudKeeperEnvironment;
+import xyz.cloudkeeper.model.api.WorkflowExecution;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -27,8 +27,8 @@ public interface WorkflowService {
      *     creating a {@link CloudKeeperEnvironment} with method {@link #create(String, boolean)} and arguments
      *     {@code request.getPrefix()} and {@code request.isCleaningRequested()},
      * </li><li>
-     *     creating a {@link com.svbio.cloudkeeper.model.api.WorkflowExecutionBuilder} with method
-     *     {@link CloudKeeperEnvironment#newWorkflowExecutionBuilder(com.svbio.cloudkeeper.model.bare.element.module.BareModule)}
+     *     creating a {@link xyz.cloudkeeper.model.api.WorkflowExecutionBuilder} with method
+     *     {@link CloudKeeperEnvironment#newWorkflowExecutionBuilder(xyz.cloudkeeper.model.bare.element.module.BareModule)}
      *     and argument {@code request.getModule()}, and
      * </li><li>
      *     setting bundle identifiers and overrides accordingly.
@@ -36,7 +36,7 @@ public interface WorkflowService {
      *
      * @param request the workflow execution request
      * @return the {@link WorkflowExecution} instance returned by
-     *     {@link com.svbio.cloudkeeper.model.api.WorkflowExecutionBuilder#start}
+     *     {@link xyz.cloudkeeper.model.api.WorkflowExecutionBuilder#start}
      * @throws IllegalArgumentException if the module or the prefix properties of the given request are {@code null}
      */
     WorkflowExecution startExecution(ExecuteWorkflowRequest request);

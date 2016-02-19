@@ -10,7 +10,7 @@
 
     <name>Workflow Parent POM</name>
     <packaging>pom</packaging>
-    <url>http://www.lifecodehealth.com</url>
+    <url>http://cloudkeeper.xyz/runtime</url>
     <description>
         This project and its submodules implement a workflow-service component that wraps CloudKeeper in order to
         provide a higher-level library. For instance, configuration happens using the Typesafe Config library, and all
@@ -20,7 +20,7 @@
     <scm>
         <connection>scm:git:file:${project.basedir}</connection>
         <tag>HEAD</tag>
-        <url>https://github.com/lifecodehealth/workflow</url>
+        <url>https://github.com/cloudkeeper-project/cloudkeeper-all-inclusive</url>
     </scm>
 
     <modules>
@@ -137,87 +137,87 @@
 
             <!-- CloudKeeper Core Components -->
             <dependency>
-                <groupId>com.svbio.cloudkeeper.core</groupId>
+                <groupId>xyz.cloudkeeper.core</groupId>
                 <artifactId>cloudkeeper-api</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.core</groupId>
+                <groupId>xyz.cloudkeeper.core</groupId>
                 <artifactId>cloudkeeper-basic</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.core</groupId>
+                <groupId>xyz.cloudkeeper.core</groupId>
                 <artifactId>cloudkeeper-dsl</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.core</groupId>
+                <groupId>xyz.cloudkeeper.core</groupId>
                 <artifactId>cloudkeeper-interpreter</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.core</groupId>
+                <groupId>xyz.cloudkeeper.core</groupId>
                 <artifactId>cloudkeeper-linker</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.core</groupId>
+                <groupId>xyz.cloudkeeper.core</groupId>
                 <artifactId>cloudkeeper-marshaling</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.core</groupId>
+                <groupId>xyz.cloudkeeper.core</groupId>
                 <artifactId>cloudkeeper-model</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.core</groupId>
+                <groupId>xyz.cloudkeeper.core</groupId>
                 <artifactId>cloudkeeper-testkit</artifactId>
                 <type>test-jar</type>
                 <version>${cloudkeeper.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.svbio.cloudkeeper.executors</groupId>
+                <groupId>xyz.cloudkeeper.executors</groupId>
                 <artifactId>cloudkeeper-drmaa_1.0</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.executors</groupId>
+                <groupId>xyz.cloudkeeper.executors</groupId>
                 <artifactId>cloudkeeper-drmaa-executor</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.executors</groupId>
+                <groupId>xyz.cloudkeeper.executors</groupId>
                 <artifactId>cloudkeeper-forking-executor</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.svbio.cloudkeeper</groupId>
+                <groupId>xyz.cloudkeeper</groupId>
                 <artifactId>cloudkeeper-file-staging</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.svbio.cloudkeeper</groupId>
+                <groupId>xyz.cloudkeeper</groupId>
                 <artifactId>cloudkeeper-s3-staging</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.svbio.cloudkeeper.maven</groupId>
+                <groupId>xyz.cloudkeeper.maven</groupId>
                 <artifactId>cloudkeeper-maven-bundle-loader</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.maven</groupId>
+                <groupId>xyz.cloudkeeper.maven</groupId>
                 <artifactId>cloudkeeper-maven-bundles</artifactId>
                 <version>${cloudkeeper.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.svbio.cloudkeeper.maven</groupId>
+                <groupId>xyz.cloudkeeper.maven</groupId>
                 <artifactId>cloudkeeper-maven-testkit</artifactId>
                 <type>test-jar</type>
                 <version>${cloudkeeper.version}</version>
@@ -517,7 +517,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>com.svbio.cloudkeeper.maven</groupId>
+                    <groupId>xyz.cloudkeeper.maven</groupId>
                     <artifactId>cloudkeeper-maven-plugin</artifactId>
                     <version>${cloudkeeper.version}</version>
                     <executions>
@@ -657,7 +657,7 @@
         <site>
             <id>github</id>
             <name>GitHub Project Page</name>
-            <url>scm:git:https://github.com/lifecodehealth/workflow.git</url>
+            <url>scm:git:https://github.com/cloudkeeper-project/cloudkeeper-all-inclusive.git</url>
         </site>
     </distributionManagement>
 

@@ -1,15 +1,5 @@
 package com.svbio.workflow.runtimecontext;
 
-import com.svbio.cloudkeeper.dsl.Module;
-import com.svbio.cloudkeeper.examples.modules.BinarySum;
-import com.svbio.cloudkeeper.maven.Bundles;
-import com.svbio.cloudkeeper.maven.DummyAetherRepository;
-import com.svbio.cloudkeeper.model.LinkerException;
-import com.svbio.cloudkeeper.model.api.RuntimeContext;
-import com.svbio.cloudkeeper.model.api.RuntimeContextFactory;
-import com.svbio.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
-import com.svbio.cloudkeeper.model.immutable.element.Name;
-import com.svbio.cloudkeeper.model.runtime.element.module.RuntimeSimpleModuleDeclaration;
 import com.svbio.workflow.base.ConfigModule;
 import com.svbio.workflow.base.LifecycleManager;
 import com.svbio.workflow.base.LifecycleManagerModule;
@@ -22,6 +12,16 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import scala.concurrent.Await;
 import scala.concurrent.duration.Duration;
+import xyz.cloudkeeper.dsl.Module;
+import xyz.cloudkeeper.examples.modules.BinarySum;
+import xyz.cloudkeeper.maven.Bundles;
+import xyz.cloudkeeper.maven.DummyAetherRepository;
+import xyz.cloudkeeper.model.LinkerException;
+import xyz.cloudkeeper.model.api.RuntimeContext;
+import xyz.cloudkeeper.model.api.RuntimeContextFactory;
+import xyz.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
+import xyz.cloudkeeper.model.immutable.element.Name;
+import xyz.cloudkeeper.model.runtime.element.module.RuntimeSimpleModuleDeclaration;
 
 import javax.annotation.Nullable;
 import java.io.IOException;

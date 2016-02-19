@@ -3,8 +3,6 @@ package com.svbio.workflow.service;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import com.svbio.cloudkeeper.interpreter.EventSubscription;
-import com.svbio.cloudkeeper.interpreter.event.ExecutionTraceEvent;
 import com.svbio.workflow.base.LifecycleManager;
 import com.svbio.workflow.base.LifecyclePhase;
 import com.svbio.workflow.base.LifecyclePhaseListener;
@@ -27,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
+import xyz.cloudkeeper.interpreter.EventSubscription;
+import xyz.cloudkeeper.interpreter.event.ExecutionTraceEvent;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;

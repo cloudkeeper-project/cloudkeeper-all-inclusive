@@ -1,12 +1,12 @@
 package com.svbio.workflow.forkedexecutor;
 
-import com.svbio.cloudkeeper.executors.ForkedExecutors;
 import com.svbio.workflow.base.LifecycleManager;
 import com.svbio.workflow.base.LifecycleManagerModule;
 import com.svbio.workflow.runtimecontext.DaggerRuntimeContextComponent;
 import com.svbio.workflow.runtimecontext.RuntimeContextComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.cloudkeeper.executors.ForkedExecutors;
 
 import java.io.IOException;
 
@@ -14,13 +14,13 @@ import java.io.IOException;
  * Forked executor.
  *
  * <p>This class executes a simple module similar to
- * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor}. However, this class is meant to be run in a
+ * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor}. However, this class is meant to be run in a
  * separate JVM. Therefore, its "interface" is different. Instead of implementing method
- * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor#submit(com.svbio.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)},
+ * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor#submit(xyz.cloudkeeper.model.api.RuntimeStateProvider, scala.concurrent.Future)},
  * this class uses
- * {@link ForkedExecutors#run(com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutor, java.io.InputStream, java.io.OutputStream)}
- * to read the {@link com.svbio.cloudkeeper.model.api.RuntimeStateProvider} instance from standard in, and it writes the
- * {@link com.svbio.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} to standard out when done.
+ * {@link ForkedExecutors#run(xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor, java.io.InputStream, java.io.OutputStream)}
+ * to read the {@link xyz.cloudkeeper.model.api.RuntimeStateProvider} instance from standard in, and it writes the
+ * {@link xyz.cloudkeeper.model.api.executor.SimpleModuleExecutorResult} to standard out when done.
  */
 public final class ForkedExecutor {
     private ForkedExecutor() {

@@ -7,4 +7,4 @@
 @NonNullByDefault
 package com.svbio.workflow.service;
 
-import com.svbio.cloudkeeper.model.util.NonNullByDefault;
+import xyz.cloudkeeper.model.util.NonNullByDefault;

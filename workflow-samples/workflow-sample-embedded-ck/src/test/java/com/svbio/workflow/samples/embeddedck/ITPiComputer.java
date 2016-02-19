@@ -1,12 +1,12 @@
 package com.svbio.workflow.samples.embeddedck;
 
-import com.svbio.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import xyz.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
 
 import java.io.IOException;
 import java.nio.file.Files;

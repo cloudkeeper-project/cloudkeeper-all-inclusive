@@ -1,8 +1,8 @@
 package com.svbio.workflow.service;
 
-import com.svbio.cloudkeeper.filesystem.FileStagingArea;
-import com.svbio.cloudkeeper.model.api.staging.StagingAreaProvider;
 import scala.concurrent.ExecutionContext;
+import xyz.cloudkeeper.filesystem.FileStagingArea;
+import xyz.cloudkeeper.model.api.staging.StagingAreaProvider;
 
 import java.nio.file.Path;
 import java.util.List;

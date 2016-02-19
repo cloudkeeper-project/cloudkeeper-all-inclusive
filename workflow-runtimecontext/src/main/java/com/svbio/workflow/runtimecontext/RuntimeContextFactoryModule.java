@@ -1,16 +1,16 @@
 package com.svbio.workflow.runtimecontext;
 
-import com.svbio.cloudkeeper.model.api.RuntimeContextFactory;
-import com.svbio.cloudkeeper.model.api.executor.ModuleConnectorProvider;
-import com.svbio.cloudkeeper.model.api.staging.InstanceProvider;
-import com.svbio.cloudkeeper.simple.LocalSimpleModuleExecutor;
-import com.svbio.cloudkeeper.simple.PrefetchingModuleConnectorProvider;
-import com.svbio.cloudkeeper.simple.SimpleInstanceProvider;
 import com.svbio.workflow.base.LifecycleException;
 import com.typesafe.config.Config;
 import dagger.Module;
 import dagger.Provides;
 import scala.concurrent.ExecutionContext;
+import xyz.cloudkeeper.model.api.RuntimeContextFactory;
+import xyz.cloudkeeper.model.api.executor.ModuleConnectorProvider;
+import xyz.cloudkeeper.model.api.staging.InstanceProvider;
+import xyz.cloudkeeper.simple.LocalSimpleModuleExecutor;
+import xyz.cloudkeeper.simple.PrefetchingModuleConnectorProvider;
+import xyz.cloudkeeper.simple.SimpleInstanceProvider;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;

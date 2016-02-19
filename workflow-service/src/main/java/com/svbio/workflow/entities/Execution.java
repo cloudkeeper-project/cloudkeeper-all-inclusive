@@ -12,7 +12,7 @@ import java.util.Objects;
  * CloudKeeper Workflow Execution.
  *
  * <p>Instances of this class represent a workflow execution, which was started when
- * {@link com.svbio.cloudkeeper.model.api.WorkflowExecutionBuilder#start()} was called.
+ * {@link xyz.cloudkeeper.model.api.WorkflowExecutionBuilder#start()} was called.
  *
  * <p>Note: JPA 2.1 mandates that an "entity class must not be final" (§2.1).
  */

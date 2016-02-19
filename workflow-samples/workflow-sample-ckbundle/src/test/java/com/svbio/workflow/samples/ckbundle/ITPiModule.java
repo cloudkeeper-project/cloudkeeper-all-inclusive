@@ -1,12 +1,5 @@
 package com.svbio.workflow.samples.ckbundle;
 
-import com.svbio.cloudkeeper.dsl.ModuleFactory;
-import com.svbio.cloudkeeper.model.api.CloudKeeperEnvironment;
-import com.svbio.cloudkeeper.model.api.WorkflowExecution;
-import com.svbio.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
-import com.svbio.cloudkeeper.simple.SingleVMCloudKeeper;
-import com.svbio.cloudkeeper.simple.WorkflowExecutions;
-import com.svbio.workflow.api.WorkflowService;
 import com.svbio.workflow.base.ConfigModule;
 import com.svbio.workflow.base.LifecycleManager;
 import com.svbio.workflow.base.LifecycleManagerModule;
@@ -21,6 +14,12 @@ import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import xyz.cloudkeeper.dsl.ModuleFactory;
+import xyz.cloudkeeper.model.api.CloudKeeperEnvironment;
+import xyz.cloudkeeper.model.api.WorkflowExecution;
+import xyz.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
+import xyz.cloudkeeper.simple.SingleVMCloudKeeper;
+import xyz.cloudkeeper.simple.WorkflowExecutions;
 
 import javax.annotation.Nullable;
 import java.io.IOException;

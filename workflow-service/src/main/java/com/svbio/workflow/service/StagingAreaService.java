@@ -1,6 +1,6 @@
 package com.svbio.workflow.service;
 
-import com.svbio.cloudkeeper.model.api.staging.StagingAreaProvider;
+import xyz.cloudkeeper.model.api.staging.StagingAreaProvider;
 
 /**
  * Subservice that provides CloudKeeper staging areas.

@@ -1,8 +1,6 @@
 package com.svbio.workflow.service;
 
 import akka.dispatch.ExecutionContexts;
-import com.svbio.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
-import com.svbio.cloudkeeper.model.beans.element.module.MutableProxyModule;
 import com.svbio.workflow.api.ExecuteWorkflowRequest;
 import com.svbio.workflow.api.ExecutionStatus;
 import com.svbio.workflow.api.UnknownExecutionIdException;
@@ -11,6 +9,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import scala.concurrent.ExecutionContext;
+import xyz.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
+import xyz.cloudkeeper.model.beans.element.module.MutableProxyModule;
 
 import javax.annotation.Nullable;
 import javax.xml.bind.JAXBContext;

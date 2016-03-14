@@ -1,7 +1,6 @@
 package com.svbio.workflow.service;
 
 import akka.actor.ActorRef;
-import scala.concurrent.ExecutionContext;
 import xyz.cloudkeeper.interpreter.CloudKeeperEnvironmentBuilder;
 import xyz.cloudkeeper.interpreter.EventSubscription;
 import xyz.cloudkeeper.model.api.CloudKeeperEnvironment;
@@ -9,26 +8,27 @@ import xyz.cloudkeeper.model.api.staging.InstanceProvider;
 import xyz.cloudkeeper.model.util.ImmutableList;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 final class CloudKeeperEnvironmentFactoryImpl implements CloudKeeperEnvironmentFactory {
-    private final ExecutionContext executionContext;
-    private final ActorRef administrator;
-    private final ActorRef masterInterpreter;
+    private final Executor executor;
+    private final ActorRef administratorActor;
+    private final ActorRef masterInterpreterActor;
     private final ActorRef instanceProviderActor;
-    private final ActorRef executor;
+    private final ActorRef executorActor;
     private final InstanceProvider instanceProvider;
     private final StagingAreaService stagingAreaService;
     private final List<EventSubscription> interpreterEventSubscriptions;
 
-    CloudKeeperEnvironmentFactoryImpl(ExecutionContext executionContext, ActorRef administrator,
-            ActorRef masterInterpreter, ActorRef executor, ActorRef instanceProviderActor,
+    CloudKeeperEnvironmentFactoryImpl(Executor executor, ActorRef administratorActor,
+            ActorRef masterInterpreterActor, ActorRef executorActor, ActorRef instanceProviderActor,
             InstanceProvider instanceProvider, StagingAreaService stagingAreaService,
             List<EventSubscription> interpreterEventSubscriptions) {
-        this.executionContext = executionContext;
-        this.administrator = administrator;
-        this.masterInterpreter = masterInterpreter;
-        this.instanceProviderActor = instanceProviderActor;
         this.executor = executor;
+        this.administratorActor = administratorActor;
+        this.masterInterpreterActor = masterInterpreterActor;
+        this.instanceProviderActor = instanceProviderActor;
+        this.executorActor = executorActor;
         this.instanceProvider = instanceProvider;
         this.stagingAreaService = stagingAreaService;
         this.interpreterEventSubscriptions = ImmutableList.copyOf(interpreterEventSubscriptions);
@@ -44,8 +44,8 @@ final class CloudKeeperEnvironmentFactoryImpl implements CloudKeeperEnvironmentF
      */
     @Override
     public CloudKeeperEnvironment create(String prefix, boolean cleaningRequested) {
-        return new CloudKeeperEnvironmentBuilder(executionContext,
-                administrator, masterInterpreter, executor, instanceProvider,
+        return new CloudKeeperEnvironmentBuilder(executor,
+                administratorActor, masterInterpreterActor, executorActor, instanceProvider,
                 stagingAreaService.provideInitialStagingAreaProvider(prefix))
             .setInstanceProviderActorPath(instanceProviderActor.path().toStringWithoutAddress())
             .setCleaningRequested(cleaningRequested)

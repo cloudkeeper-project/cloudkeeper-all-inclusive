@@ -10,8 +10,6 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import scala.concurrent.Await;
-import scala.concurrent.duration.Duration;
 import xyz.cloudkeeper.dsl.Module;
 import xyz.cloudkeeper.examples.modules.BinarySum;
 import xyz.cloudkeeper.maven.Bundles;
@@ -23,7 +21,6 @@ import xyz.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
 import xyz.cloudkeeper.model.immutable.element.Name;
 import xyz.cloudkeeper.model.runtime.element.module.RuntimeSimpleModuleDeclaration;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -31,6 +28,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 public class ITRuntimeContextComponent {
     private Path tempDir;
@@ -60,10 +58,8 @@ public class ITRuntimeContextComponent {
             RuntimeContextFactory runtimeContextFactory = runtimeContextComponent.getRuntimeContextFactory();
 
             try (
-                RuntimeContext runtimeContext = Await.result(
-                    runtimeContextFactory.newRuntimeContext(Collections.singletonList(bundleIdentifier)),
-                    Duration.Inf()
-                )
+                RuntimeContext runtimeContext
+                    = runtimeContextFactory.newRuntimeContext(Collections.singletonList(bundleIdentifier)).get()
             ) {
                 @Nullable RuntimeSimpleModuleDeclaration moduleDeclaration = runtimeContext.getRepository().getElement(
                     RuntimeSimpleModuleDeclaration.class,

@@ -3,7 +3,6 @@ package com.svbio.workflow.service;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.dispatch.ExecutionContexts;
 import com.svbio.workflow.api.ExecutionStatus;
 import com.svbio.workflow.api.WorkflowService;
 import com.svbio.workflow.base.LifecycleException;
@@ -26,12 +25,6 @@ import xyz.cloudkeeper.model.api.staging.InstanceProvider;
 import xyz.cloudkeeper.model.util.ImmutableList;
 import xyz.cloudkeeper.simple.LocalSimpleModuleExecutor;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,9 +34,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
 /**
  * Dagger module that provides a {@link WorkflowService}.
@@ -152,14 +152,6 @@ final class WorkflowServiceModule {
     }
 
     @Provides
-    @LongRunningQualifier
-    @WorkflowServiceScope
-    static ExecutionContext provideLongRunningExecutionContext(
-            @LongRunningQualifier ScheduledExecutorService executorService) {
-        return ExecutionContexts.fromExecutorService(executorService);
-    }
-
-    @Provides
     @WorkflowServiceScope
     static RequirementsProvider providerRequirementsProvider(ServiceConfiguration serviceConfiguration) {
         return new RequirementsProvider(serviceConfiguration.defaultCpu, serviceConfiguration.defaultMemory);
@@ -180,7 +172,7 @@ final class WorkflowServiceModule {
                     "Class %s is contained in the list of classes to be added to the classpath of the simple-module "
                         + "executor. However, this class could not be loaded.",
                     extraClassName
-                ));
+                ), exception);
             }
         }
 
@@ -193,7 +185,7 @@ final class WorkflowServiceModule {
     @StagingAreaServiceKey("file")
     @WorkflowServiceScope
     static StagingAreaService provideFileStagingAreaService(FileStagingAreaConfiguration fileConfiguration,
-            ExecutionContext shortLivedExecutionContext) {
+            Executor shortLivedExecutor) {
         Path basePath = fileConfiguration.basePath;
 
         for (Path directory: fileConfiguration.hardlinkEnabledPaths) {
@@ -213,7 +205,7 @@ final class WorkflowServiceModule {
         }
 
         return new FileStagingAreaService(fileConfiguration.basePath, fileConfiguration.hardlinkEnabledPaths,
-            shortLivedExecutionContext);
+            shortLivedExecutor);
     }
 
     @Provides
@@ -236,12 +228,9 @@ final class WorkflowServiceModule {
     @WorkflowServiceScope
     static SimpleModuleExecutor newForkingSimpleModuleExecutor(
             CommandProvider commandProvider,
-            ExecutionContext shortLivedExecutionContext,
-            @LongRunningQualifier ExecutionContext longRunningExecutionContext,
+            @LongRunningQualifier ScheduledExecutorService longRunningExecutor,
             InstanceProvider instanceProvider) {
-        return new ForkingExecutor.Builder(shortLivedExecutionContext, longRunningExecutionContext, commandProvider)
-            .setInstanceProvider(instanceProvider)
-            .build();
+        return new ForkingExecutor(longRunningExecutor, commandProvider, instanceProvider);
     }
 
     @Provides(type = Provides.Type.MAP)
@@ -283,8 +272,8 @@ final class WorkflowServiceModule {
     @StatusKeepingServiceKey("file")
     @WorkflowServiceScope
     static StatusKeepingService provideFileStatusKeepingService(FileStatusConfiguration statusConfiguration,
-            ExecutionContext shortLivedExecutionContext, JAXBContext jaxbContext) {
-        return new FileStatusKeepingService(statusConfiguration.path, shortLivedExecutionContext, jaxbContext);
+            Executor shortLivedExecutor, JAXBContext jaxbContext) {
+        return new FileStatusKeepingService(statusConfiguration.path, shortLivedExecutor, jaxbContext);
     }
 
     @Provides(type = Provides.Type.MAP)
@@ -311,16 +300,16 @@ final class WorkflowServiceModule {
     @Provides
     @WorkflowServiceScope
     static CloudKeeperEnvironmentFactory provideEnvironmentFactory(
-            ExecutionContext executionContext,
-            @Named(ADMINISTRATOR_NAME) ActorRef administrator,
-            @Named(MASTER_INTERPRETER_NAME) ActorRef masterInterpreter,
-            @Named(EXECUTOR_NAME) ActorRef executor,
+            Executor executor,
+            @Named(ADMINISTRATOR_NAME) ActorRef administratorActor,
+            @Named(MASTER_INTERPRETER_NAME) ActorRef masterInterpreterActor,
+            @Named(EXECUTOR_NAME) ActorRef executorActor,
             @Named(INSTANCE_PROVIDER_NAME) ActorRef instanceProviderActor,
             InstanceProvider instanceProvider,
             StagingAreaService stagingAreaService,
             @InterpreterEventsQualifier Set<EventSubscription> interpreterEventSubscriptions) {
-        return new CloudKeeperEnvironmentFactoryImpl(executionContext, administrator, masterInterpreter, executor,
-            instanceProviderActor, instanceProvider, stagingAreaService,
+        return new CloudKeeperEnvironmentFactoryImpl(executor, administratorActor, masterInterpreterActor,
+            executorActor, instanceProviderActor, instanceProvider, stagingAreaService,
             ImmutableList.copyOf(interpreterEventSubscriptions));
     }
 

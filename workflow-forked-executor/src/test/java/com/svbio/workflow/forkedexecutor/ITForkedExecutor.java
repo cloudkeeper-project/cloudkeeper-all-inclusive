@@ -1,13 +1,9 @@
 package com.svbio.workflow.forkedexecutor;
 
-import akka.dispatch.ExecutionContexts;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import scala.concurrent.Await;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.duration.Duration;
 import xyz.cloudkeeper.dsl.Module;
 import xyz.cloudkeeper.examples.modules.Decrease;
 import xyz.cloudkeeper.executors.ForkedExecutors;
@@ -49,7 +45,6 @@ public class ITForkedExecutor {
     private Path tempDir;
     private List<String> commandLine;
     private ExecutorService executorService;
-    private ExecutionContext executionContext;
 
     /**
      * Returns the command line for running {@link ForkedExecutor#main} in a new JVM.
@@ -80,7 +75,6 @@ public class ITForkedExecutor {
         properties.put("com.svbio.workflow.workspacebasepath", tempDir.toString());
 
         executorService = Executors.newCachedThreadPool();
-        executionContext = ExecutionContexts.fromExecutorService(executorService);
 
         // The current content of 'properties' needs to be used as configuration in the forked Java process, too. The
         // easiest way is to define the properties as system properties.
@@ -102,13 +96,11 @@ public class ITForkedExecutor {
     public void run() throws Exception {
         Path ioPath = Files.createDirectory(tempDir.resolve("io"));
         Path stagingBasePath = Files.createDirectory(tempDir.resolve("staging"));
-        RuntimeContextFactory runtimeContextFactory = new DSLRuntimeContextFactory.Builder(executionContext).build();
+        RuntimeContextFactory runtimeContextFactory = new DSLRuntimeContextFactory.Builder(executorService).build();
         URI bundleIdentifier = new URI(Module.URI_SCHEME, Decrease.class.getName(), null);
         try (
-            RuntimeContext runtimeContext = Await.result(
-                runtimeContextFactory.newRuntimeContext(Collections.singletonList(bundleIdentifier)),
-                Duration.Inf()
-            )
+            RuntimeContext runtimeContext
+                = runtimeContextFactory.newRuntimeContext(Collections.singletonList(bundleIdentifier)).get()
         ) {
             RuntimeAnnotatedExecutionTrace executionTrace = runtimeContext.newAnnotatedExecutionTrace(
                 ExecutionTrace.empty(),
@@ -116,12 +108,9 @@ public class ITForkedExecutor {
                 Collections.emptyList()
             );
             StagingArea stagingArea = new FileStagingArea.Builder(
-                    runtimeContext, executionTrace, stagingBasePath, executionContext)
+                    runtimeContext, executionTrace, stagingBasePath, executorService)
                 .build();
-            Await.result(
-                stagingArea.putObject(ExecutionTrace.empty().resolveInPort(SimpleName.identifier("num")), 5),
-                Duration.Inf()
-            );
+            stagingArea.putObject(ExecutionTrace.empty().resolveInPort(SimpleName.identifier("num")), 5).join();
 
             RuntimeStateProvider runtimeStateProvider = RuntimeStateProvider.of(runtimeContext, stagingArea);
             Path stdinFile = ioPath.resolve("stdin");
@@ -156,10 +145,7 @@ public class ITForkedExecutor {
 
             Assert.assertEquals(result.getExecutorName(), Name.qualifiedName(ForkedExecutors.class.getName()));
             Assert.assertEquals(
-                Await.result(
-                    stagingArea.getObject(ExecutionTrace.empty().resolveOutPort(SimpleName.identifier("result"))),
-                    Duration.Inf()
-                ),
+                stagingArea.getObject(ExecutionTrace.empty().resolveOutPort(SimpleName.identifier("result"))).get(),
                 4
             );
         }

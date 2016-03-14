@@ -4,7 +4,6 @@ import com.svbio.workflow.base.LifecycleException;
 import com.typesafe.config.Config;
 import dagger.Module;
 import dagger.Provides;
-import scala.concurrent.ExecutionContext;
 import xyz.cloudkeeper.model.api.RuntimeContextFactory;
 import xyz.cloudkeeper.model.api.executor.ModuleConnectorProvider;
 import xyz.cloudkeeper.model.api.staging.InstanceProvider;
@@ -19,6 +18,7 @@ import javax.inject.Singleton;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 /**
  * Dagger module that provides a {@link RuntimeContextFactory}.
@@ -45,25 +45,23 @@ final class RuntimeContextFactoryModule {
 
     @Provides
     @Singleton
-    static InstanceProvider provideInstanceProvider(ExecutionContext executionContext,
-            RuntimeContextFactory runtimeContextFactory) {
-        return new SimpleInstanceProvider.Builder(executionContext)
+    static InstanceProvider provideInstanceProvider(Executor executor, RuntimeContextFactory runtimeContextFactory) {
+        return new SimpleInstanceProvider.Builder(executor)
             .setRuntimeContextFactory(runtimeContextFactory)
             .build();
     }
 
     @Provides
     @Singleton
-    static ModuleConnectorProvider provideModuleConnectorProvider(ExecutorConfig config,
-            ExecutionContext executionContext) {
-        return new PrefetchingModuleConnectorProvider(config.workspaceBasePath, executionContext);
+    static ModuleConnectorProvider provideModuleConnectorProvider(ExecutorConfig config) {
+        return new PrefetchingModuleConnectorProvider(config.workspaceBasePath);
     }
 
     @Provides
     @Singleton
-    static LocalSimpleModuleExecutor provideSimpleModuleExecutor(ExecutionContext executionContext,
-            InstanceProvider instanceProvider, ModuleConnectorProvider moduleConnectorProvider) {
-        return new LocalSimpleModuleExecutor.Builder(executionContext, moduleConnectorProvider)
+    static LocalSimpleModuleExecutor provideSimpleModuleExecutor(Executor executor, InstanceProvider instanceProvider,
+            ModuleConnectorProvider moduleConnectorProvider) {
+        return new LocalSimpleModuleExecutor.Builder(executor, moduleConnectorProvider)
             .setInstanceProvider(instanceProvider)
             .build();
     }

@@ -21,7 +21,6 @@ import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
-import scala.concurrent.ExecutionContext;
 import xyz.cloudkeeper.dsl.ModuleFactory;
 import xyz.cloudkeeper.linker.ClassProvider;
 import xyz.cloudkeeper.linker.ExecutableProvider;
@@ -43,6 +42,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 
 /**
  * Dagger module that provides a {@code "aether"}-annotated {@link RuntimeContextFactory}.
@@ -207,11 +207,10 @@ public final class MavenRuntimeContextFactoryModule {
     @RuntimeContextFactoryQualifier
     @RuntimeContextFactoryKey("aether")
     @Singleton
-    RuntimeContextFactory provideRuntimeContextFactory(ExecutionContext executionContext,
-            RepositorySystem repositorySystem, RepositorySystemSession repositorySystemSession,
-            AetherConfig aetherConfiguration) {
+    RuntimeContextFactory provideRuntimeContextFactory(Executor executor, RepositorySystem repositorySystem,
+            RepositorySystemSession repositorySystemSession, AetherConfig aetherConfiguration) {
         MavenRuntimeContextFactory.Builder builder = new MavenRuntimeContextFactory.Builder(
-                executionContext, repositorySystem, repositorySystemSession)
+                executor, repositorySystem, repositorySystemSession)
             .setClassLoader(classLoader)
             .setRemoteRepositories(aetherConfiguration.remoteRepositories);
         boolean ignoreClassNotFound = classLoader != null;

@@ -1,6 +1,5 @@
 package com.svbio.workflow.service;
 
-import akka.dispatch.ExecutionContexts;
 import com.svbio.workflow.api.ExecuteWorkflowRequest;
 import com.svbio.workflow.api.ExecutionStatus;
 import com.svbio.workflow.api.UnknownExecutionIdException;
@@ -8,7 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import scala.concurrent.ExecutionContext;
 import xyz.cloudkeeper.model.api.util.RecursiveDeleteVisitor;
 import xyz.cloudkeeper.model.beans.element.module.MutableProxyModule;
 
@@ -26,13 +24,11 @@ import java.util.concurrent.Executors;
 public class ITFileStatusKeepingService {
     @Nullable private Path tempDir;
     @Nullable private ExecutorService executorService;
-    @Nullable private ExecutionContext executionContext;
 
     @BeforeClass
     public void setup() throws IOException {
         tempDir = Files.createTempDirectory(getClass().getSimpleName());
         executorService = Executors.newCachedThreadPool();
-        executionContext = ExecutionContexts.fromExecutorService(executorService);
     }
 
     @AfterClass
@@ -44,8 +40,8 @@ public class ITFileStatusKeepingService {
 
     @Test
     public void persistLoad() throws Exception {
-        assert executionContext != null && tempDir != null;
-        FileStatusKeepingService statusKeepingService = new FileStatusKeepingService(tempDir, executionContext,
+        assert executorService != null && tempDir != null;
+        FileStatusKeepingService statusKeepingService = new FileStatusKeepingService(tempDir, executorService,
             JAXBContext.newInstance(ExecutionStatus.class));
 
         ExecutionStatus executionStatus = new ExecutionStatus()

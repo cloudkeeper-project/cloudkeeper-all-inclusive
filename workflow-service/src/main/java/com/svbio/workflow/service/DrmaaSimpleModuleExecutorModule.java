@@ -9,17 +9,17 @@ import dagger.Provides;
 import org.ggf.drmaa.DrmaaException;
 import org.ggf.drmaa.Session;
 import org.ggf.drmaa.SessionFactory;
-import scala.concurrent.ExecutionContext;
 import xyz.cloudkeeper.drm.DrmaaSimpleModuleExecutor;
 import xyz.cloudkeeper.drm.NativeSpecificationProvider;
 import xyz.cloudkeeper.executors.CommandProvider;
 import xyz.cloudkeeper.model.api.executor.SimpleModuleExecutor;
 import xyz.cloudkeeper.model.api.staging.InstanceProvider;
 
-import javax.inject.Inject;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.inject.Inject;
 
 /**
  * Dagger module that ultimately provides a {@code "drmaa"}-annotated {@link SimpleModuleExecutor}.
@@ -56,14 +56,14 @@ final class DrmaaSimpleModuleExecutorModule {
     @WorkflowServiceScope
     static SimpleModuleExecutor newDrmaaExecutor(LifecycleManager lifecycleManager,
             DrmaaConfiguration drmaaConfiguration, CommandProvider commandProvider,
-            RequirementsProvider requirementsProvider, ExecutionContext shortLivedExecutionContext,
+            RequirementsProvider requirementsProvider, Executor shortLivedExecutor,
             @LongRunningQualifier ScheduledExecutorService longLivedExecutorService,
             InstanceProvider instanceProvider) {
         NativeSpecificationProvider nativeSpecificationProvider = new NativeSpecificationProviderImpl(
             drmaaConfiguration.nativeSpecification, requirementsProvider, drmaaConfiguration.memoryScalingFactor);
         Session drmaaSession = newDrmaaSession(lifecycleManager);
         return new DrmaaSimpleModuleExecutor.Builder(drmaaSession, drmaaConfiguration.jobIOBasePath, commandProvider,
-                shortLivedExecutionContext, longLivedExecutorService)
+                shortLivedExecutor, longLivedExecutorService)
             .setInstanceProvider(instanceProvider)
             .setNativeSpecificationProvider(nativeSpecificationProvider)
             .build();

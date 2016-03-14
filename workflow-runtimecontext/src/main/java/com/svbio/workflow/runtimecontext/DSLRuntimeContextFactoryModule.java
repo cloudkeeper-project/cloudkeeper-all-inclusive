@@ -2,11 +2,11 @@ package com.svbio.workflow.runtimecontext;
 
 import dagger.Module;
 import dagger.Provides;
-import scala.concurrent.ExecutionContext;
 import xyz.cloudkeeper.model.api.RuntimeContextFactory;
 import xyz.cloudkeeper.simple.DSLRuntimeContextFactory;
 
 import javax.inject.Singleton;
+import java.util.concurrent.Executor;
 
 /**
  * Dagger module that provides a {@link RuntimeContextFactory}.
@@ -25,7 +25,7 @@ final class DSLRuntimeContextFactoryModule {
     @RuntimeContextFactoryQualifier
     @RuntimeContextFactoryKey("dsl")
     @Singleton
-    static RuntimeContextFactory provideRuntimeContextFactory(ExecutionContext executionContext) {
-        return new DSLRuntimeContextFactory.Builder(executionContext).build();
+    static RuntimeContextFactory provideRuntimeContextFactory(Executor executor) {
+        return new DSLRuntimeContextFactory.Builder(executor).build();
     }
 }
